@@ -4,16 +4,2453 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zenko Financial - Tu Estrategia Financiera</title>
+    
+    <!-- CDN Dependencies -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Material 3 Expressive - Estrategia Kitsune Financiera */
+        :root {
+            /* Primary Colors */
+            --color-primary: #1E3A8A; /* Azul Zafiro */
+            --color-graphite: #2D3748; /* Gris Grafito */
+            
+            /* Functional Colors */
+            --color-success: #48BB78; /* Verde Azulado */
+            --color-danger: #E53E3E; /* Rojo Peligro */
+            --color-info: #63B3ED; /* Azul Claro */
+            
+            /* Light Mode */
+            --bg-primary-light: #F7FAFC; /* Blanco Cremoso */
+            --bg-card-light: #FFFFFF; /* Blanco Puro */
+            
+            /* Dark Mode */
+            --bg-primary-dark: #121212; /* Negro Carbón */
+            --bg-card-dark: #1E1E1E; /* Gris Oscuro */
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary-light);
+        }
+        
+        /* Primary Gradient - Azul Zafiro */
+        .kitsune-gradient {
+            background: linear-gradient(135deg, #1E3A8A 0%, #1E40AF 50%, #2563EB 100%);
+        }
+        
+        /* Info Gradient - Azul Claro */
+        .kitsune-gradient-alt {
+            background: linear-gradient(135deg, #63B3ED 0%, #3B82F6 100%);
+        }
+        
+        /* Success Gradient - Verde Azulado */
+        .success-gradient {
+            background: linear-gradient(135deg, #48BB78 0%, #38A169 100%);
+        }
+        
+        /* Material 3 Elevation & Shadows */
+        .elevation-1 {
+            box-shadow: 0 1px 3px rgba(30, 58, 138, 0.12), 0 1px 2px rgba(30, 58, 138, 0.08);
+        }
+        
+        .elevation-2 {
+            box-shadow: 0 3px 6px rgba(30, 58, 138, 0.15), 0 2px 4px rgba(30, 58, 138, 0.12);
+        }
+        
+        .elevation-3 {
+            box-shadow: 0 10px 20px rgba(30, 58, 138, 0.15), 0 3px 6px rgba(30, 58, 138, 0.10);
+        }
+        
+        /* Smooth Animations */
+        .fade-in {
+            animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .modal-backdrop {
+            background-color: rgba(18, 18, 18, 0.6);
+            backdrop-filter: blur(8px);
+        }
+        
+        /* Material 3 Interactive States */
+        .card-hover {
+            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+                        box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(30, 58, 138, 0.15), 0 4px 8px rgba(30, 58, 138, 0.1);
+        }
+        
+        /* Active Tab Style */
+        .tab-active {
+            border-bottom: 3px solid var(--color-primary);
+            color: var(--color-primary);
+            font-weight: 600;
+        }
+        
+        /* Progress Bar with Material 3 Motion */
+        .progress-bar {
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 8px;
+        }
+        
+        /* Custom Scrollbar */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        /* Material 3 Button States */
+        .btn-primary {
+            background-color: var(--color-primary);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .btn-primary:hover {
+            background-color: #1E40AF;
+            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.3);
+        }
+        
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+    </style>
 </head>
-<body class="bg-gray-50">
-    <div class="min-h-screen flex items-center justify-center">
-        <div class="text-center">
-            <div class="text-8xl mb-4">🦊</div>
-            <h1 class="text-4xl font-bold text-purple-600 mb-2">Zenko Financial</h1>
-            <p class="text-xl text-gray-600">Claridad Estratégica en tus Finanzas</p>
-            <p class="text-sm text-gray-500 mt-4">Powered by Proyecto Kodō</p>
+<body class="bg-gray-100">
+    
+    <!-- Auth Page -->
+    <div id="authPage" class="min-h-screen flex items-center justify-center p-4">
+        <div class="max-w-md w-full">
+            <div class="text-center mb-8 fade-in">
+                <div class="text-6xl mb-4">🦊</div>
+                <h1 class="text-4xl font-bold kitsune-gradient bg-clip-text text-transparent mb-2">Zenko Financial</h1>
+                <p class="text-gray-600">Claridad Estratégica en tus Finanzas</p>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-lg p-8 fade-in">
+                <!-- Tabs -->
+                <div class="flex border-b mb-6">
+                    <button id="loginTab" class="flex-1 py-2 text-center tab-active" onclick="showAuthTab('login')">Iniciar Sesión</button>
+                    <button id="registerTab" class="flex-1 py-2 text-center text-gray-500" onclick="showAuthTab('register')">Registro</button>
+                </div>
+                
+                <!-- Login Form -->
+                <form id="loginForm" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Correo Electrónico</label>
+                        <input type="email" id="loginEmail" required 
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
+                        <input type="password" id="loginPassword" required 
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+                    <div id="loginError" class="text-red-500 text-sm hidden"></div>
+                    <button type="submit" class="w-full kitsune-gradient text-white py-3 rounded-lg font-semibold hover:opacity-90 transition">
+                        Entrar
+                    </button>
+                </form>
+                
+                <!-- Register Form -->
+                <form id="registerForm" class="space-y-4 hidden">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Correo Electrónico</label>
+                        <input type="email" id="registerEmail" required 
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
+                        <input type="password" id="registerPassword" required minlength="6"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Confirmar Contraseña</label>
+                        <input type="password" id="registerPasswordConfirm" required minlength="6"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+                    <div id="registerError" class="text-red-500 text-sm hidden"></div>
+                    <button type="submit" class="w-full kitsune-gradient-alt text-white py-3 rounded-lg font-semibold hover:opacity-90 transition">
+                        Crear Cuenta
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
+    
+    <!-- Main App -->
+    <div id="appPage" class="hidden">
+        <!-- Navigation -->
+        <nav class="kitsune-gradient text-white sticky top-0 z-50 shadow-lg">
+            <div class="container mx-auto px-4">
+                <div class="flex items-center justify-between h-16">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-2xl">🦊</span>
+                        <span class="font-bold text-xl">Zenko Financial</span>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <button onclick="navigateTo('perfil')" class="hover:bg-white hover:bg-opacity-20 px-3 py-2 rounded-lg transition">
+                            <span id="userXP">0 XP</span>
+                        </button>
+                        <button onclick="logout()" class="hover:bg-white hover:bg-opacity-20 px-3 py-2 rounded-lg transition">
+                            Salir
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- Tab Navigation -->
+        <div class="bg-white border-b sticky top-16 z-40">
+            <div class="container mx-auto px-4">
+                <div class="flex overflow-x-auto hide-scrollbar space-x-1">
+                    <button onclick="navigateTo('dashboard')" data-page="dashboard" class="nav-tab px-4 py-3 text-sm font-medium whitespace-nowrap">
+                        📊 Dashboard
+                    </button>
+                    <button onclick="navigateTo('transacciones')" data-page="transacciones" class="nav-tab px-4 py-3 text-sm font-medium whitespace-nowrap">
+                        💸 Transacciones
+                    </button>
+                    <button onclick="navigateTo('presupuestos')" data-page="presupuestos" class="nav-tab px-4 py-3 text-sm font-medium whitespace-nowrap">
+                        🎯 Presupuestos
+                    </button>
+                    <button onclick="navigateTo('metas')" data-page="metas" class="nav-tab px-4 py-3 text-sm font-medium whitespace-nowrap">
+                        🏆 Metas
+                    </button>
+                    <button onclick="navigateTo('inversiones')" data-page="inversiones" class="nav-tab px-4 py-3 text-sm font-medium whitespace-nowrap">
+                        📈 Inversiones
+                    </button>
+                    <button onclick="navigateTo('suscripciones')" data-page="suscripciones" class="nav-tab px-4 py-3 text-sm font-medium whitespace-nowrap">
+                        🔄 Suscripciones
+                    </button>
+                    <button onclick="navigateTo('reportes')" data-page="reportes" class="nav-tab px-4 py-3 text-sm font-medium whitespace-nowrap">
+                        📑 Reportes
+                    </button>
+                    <button onclick="navigateTo('importador')" data-page="importador" class="nav-tab px-4 py-3 text-sm font-medium whitespace-nowrap">
+                        🤖 Importador
+                    </button>
+                    <button onclick="navigateTo('gestion')" data-page="gestion" class="nav-tab px-4 py-3 text-sm font-medium whitespace-nowrap">
+                        ⚙️ Gestión
+                    </button>
+                    <button onclick="navigateTo('perfil')" data-page="perfil" class="nav-tab px-4 py-3 text-sm font-medium whitespace-nowrap">
+                        🦊 Perfil
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Page Container -->
+        <div class="container mx-auto px-4 py-6">
+            
+            <!-- Dashboard Page -->
+            <div id="dashboardPage" class="page-content">
+                <h1 class="text-3xl font-bold mb-6">Tu Estrategia</h1>
+                
+                <!-- Welcome Card for New Users -->
+                <div id="welcomeCard" class="hidden bg-gradient-to-r from-blue-500 to-pink-500 text-white rounded-lg p-6 mb-6">
+                    <h2 class="text-2xl font-bold mb-2">¡Bienvenido a Zenko Financial! 🦊</h2>
+                    <p class="mb-4">Comienza tu viaje financiero creando tu primera cuenta y transacción.</p>
+                    <button onclick="navigateTo('gestion')" class="bg-white text-blue-800 px-6 py-2 rounded-lg font-semibold hover:bg-opacity-90">
+                        Configurar Ahora
+                    </button>
+                </div>
+                
+                <!-- Metrics Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="text-sm text-gray-500 mb-1">Saldo Total</div>
+                        <div class="text-3xl font-bold text-blue-800" id="totalBalance">$0.00</div>
+                        <div class="text-xs text-gray-400 mt-1">MXN</div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="text-sm text-gray-500 mb-1">Ingresos del Mes</div>
+                        <div class="text-3xl font-bold text-green-500" id="monthIncome">$0.00</div>
+                        <div class="text-xs text-gray-400 mt-1">↗️ Este mes</div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="text-sm text-gray-500 mb-1">Gastos del Mes</div>
+                        <div class="text-3xl font-bold text-red-500" id="monthExpenses">$0.00</div>
+                        <div class="text-xs text-gray-400 mt-1">↘️ Este mes</div>
+                    </div>
+                </div>
+                
+                <!-- Accounts Carousel -->
+                <div class="mb-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-bold">Tus Cuentas</h2>
+                        <button onclick="navigateTo('gestion')" class="text-blue-800 text-sm hover:underline">Ver todas</button>
+                    </div>
+                    <div id="accountsCarousel" class="flex overflow-x-auto hide-scrollbar space-x-4 pb-2">
+                        <div class="text-gray-400 text-sm">Carga tus cuentas...</div>
+                    </div>
+                </div>
+                
+                <!-- Recent Transactions -->
+                <div class="mb-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-bold">Transacciones Recientes</h2>
+                        <button onclick="navigateTo('transacciones')" class="text-blue-800 text-sm hover:underline">Ver todas</button>
+                    </div>
+                    <div class="bg-white rounded-lg shadow">
+                        <div id="recentTransactions" class="divide-y">
+                            <div class="p-4 text-gray-400 text-sm">No hay transacciones recientes</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Cash Flow Chart -->
+                <div class="mb-6">
+                    <h2 class="text-xl font-bold mb-4">Flujo de Caja (6 meses)</h2>
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <canvas id="cashFlowChart" height="80"></canvas>
+                    </div>
+                </div>
+                
+                <!-- Zenko Tip -->
+                <div id="zenkoTip" class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+                    <div class="flex items-start">
+                        <span class="text-2xl mr-3">💡</span>
+                        <div>
+                            <h3 class="font-semibold text-gray-800 mb-1">Zenko Tip</h3>
+                            <p class="text-blue-900 text-sm" id="zenkoTipText">¡Empieza registrando tus transacciones diarias para tener una visión clara de tu flujo de efectivo!</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Actions -->
+                <div class="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <button onclick="openTransactionModal()" class="bg-white rounded-lg shadow p-4 text-center hover:shadow-lg transition">
+                        <div class="text-3xl mb-2">💸</div>
+                        <div class="text-sm font-medium">Nueva Transacción</div>
+                    </button>
+                    <button onclick="navigateTo('presupuestos')" class="bg-white rounded-lg shadow p-4 text-center hover:shadow-lg transition">
+                        <div class="text-3xl mb-2">🎯</div>
+                        <div class="text-sm font-medium">Presupuestos</div>
+                    </button>
+                    <button onclick="navigateTo('metas')" class="bg-white rounded-lg shadow p-4 text-center hover:shadow-lg transition">
+                        <div class="text-3xl mb-2">🏆</div>
+                        <div class="text-sm font-medium">Metas</div>
+                    </button>
+                    <button onclick="navigateTo('reportes')" class="bg-white rounded-lg shadow p-4 text-center hover:shadow-lg transition">
+                        <div class="text-3xl mb-2">📊</div>
+                        <div class="text-sm font-medium">Reportes</div>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Transactions Page -->
+            <div id="transaccionesPage" class="page-content hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <h1 class="text-3xl font-bold">Transacciones</h1>
+                    <button onclick="openTransactionModal()" class="kitsune-gradient text-white px-6 py-2 rounded-lg font-semibold hover:opacity-90">
+                        ➕ Nueva Transacción
+                    </button>
+                </div>
+                
+                <!-- Filters -->
+                <div class="bg-white rounded-lg shadow p-4 mb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Fecha Inicio</label>
+                            <input type="text" id="filterStartDate" class="w-full px-3 py-2 border rounded-lg text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Fecha Fin</label>
+                            <input type="text" id="filterEndDate" class="w-full px-3 py-2 border rounded-lg text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Cuenta</label>
+                            <select id="filterAccount" class="w-full px-3 py-2 border rounded-lg text-sm">
+                                <option value="">Todas</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Tipo</label>
+                            <select id="filterType" class="w-full px-3 py-2 border rounded-lg text-sm">
+                                <option value="">Todos</option>
+                                <option value="ingreso">Ingreso</option>
+                                <option value="gasto">Gasto</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Categoría</label>
+                            <select id="filterCategory" class="w-full px-3 py-2 border rounded-lg text-sm">
+                                <option value="">Todas</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button onclick="applyTransactionFilters()" class="mt-4 bg-blue-800 text-white px-6 py-2 rounded-lg text-sm hover:bg-blue-900">
+                        Aplicar Filtros
+                    </button>
+                </div>
+                
+                <!-- Transactions List -->
+                <div class="bg-white rounded-lg shadow">
+                    <div id="transactionsList" class="divide-y">
+                        <div class="p-8 text-center text-gray-400">
+                            No hay transacciones para mostrar
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Budgets Page -->
+            <div id="presupuestosPage" class="page-content hidden">
+                <h1 class="text-3xl font-bold mb-6">Mi Reserva Estratégica</h1>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Donut Chart -->
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h2 class="text-xl font-bold mb-4">Gastos por Categoría (Este Mes)</h2>
+                        <canvas id="budgetDonutChart" height="250"></canvas>
+                    </div>
+                    
+                    <!-- Budget List -->
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-xl font-bold">Presupuestos</h2>
+                            <button onclick="openBudgetModal()" class="text-blue-800 text-sm hover:underline">Editar</button>
+                        </div>
+                        <div id="budgetsList" class="space-y-4">
+                            <div class="text-gray-400 text-sm">Configura tus presupuestos...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Goals Page -->
+            <div id="metasPage" class="page-content hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <h1 class="text-3xl font-bold">Metas Estratégicas</h1>
+                    <button onclick="openGoalModal()" class="kitsune-gradient text-white px-6 py-2 rounded-lg font-semibold hover:opacity-90">
+                        ➕ Nueva Meta
+                    </button>
+                </div>
+                
+                <div id="goalsList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="col-span-full text-center text-gray-400 py-12">
+                        No tienes metas creadas. ¡Comienza a definir tus objetivos financieros!
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Investments Page -->
+            <div id="inversionesPage" class="page-content hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <h1 class="text-3xl font-bold">The Zenko Market</h1>
+                    <button onclick="openInvestmentModal()" class="kitsune-gradient text-white px-6 py-2 rounded-lg font-semibold hover:opacity-90">
+                        ➕ Nuevo Activo
+                    </button>
+                </div>
+                
+                <!-- Portfolio Performance -->
+                <div class="bg-white rounded-lg shadow p-6 mb-6">
+                    <h2 class="text-xl font-bold mb-4">Rendimiento del Portafolio</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <div>
+                            <div class="text-sm text-gray-500">Valor Total</div>
+                            <div class="text-2xl font-bold text-blue-800" id="portfolioValue">$0.00</div>
+                        </div>
+                        <div>
+                            <div class="text-sm text-gray-500">Inversión Inicial</div>
+                            <div class="text-2xl font-bold" id="portfolioInvested">$0.00</div>
+                        </div>
+                        <div>
+                            <div class="text-sm text-gray-500">Rendimiento</div>
+                            <div class="text-2xl font-bold" id="portfolioReturn">0%</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="investmentsList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="col-span-full text-center text-gray-400 py-12">
+                        No tienes inversiones registradas. ¡Comienza a construir tu portafolio!
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Subscriptions Page -->
+            <div id="suscripcionesPage" class="page-content hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <h1 class="text-3xl font-bold">Suscripciones</h1>
+                    <button onclick="openSubscriptionModal()" class="kitsune-gradient text-white px-6 py-2 rounded-lg font-semibold hover:opacity-90">
+                        ➕ Nueva Suscripción
+                    </button>
+                </div>
+                
+                <div class="mb-4">
+                    <div class="text-sm text-gray-500">Gasto Mensual Total</div>
+                    <div class="text-3xl font-bold text-blue-800" id="totalSubscriptions">$0.00</div>
+                </div>
+                
+                <div id="subscriptionsList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="col-span-full text-center text-gray-400 py-12">
+                        No tienes suscripciones registradas
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Reports Page -->
+            <div id="reportesPage" class="page-content hidden">
+                <h1 class="text-3xl font-bold mb-6">Centro de Reportes y Análisis</h1>
+                
+                <!-- Extended Cash Flow -->
+                <div class="bg-white rounded-lg shadow p-6 mb-6">
+                    <h2 class="text-xl font-bold mb-4">Flujo de Caja (12 meses)</h2>
+                    <canvas id="reportCashFlowChart" height="80"></canvas>
+                </div>
+                
+                <!-- Expenses by Category -->
+                <div class="bg-white rounded-lg shadow p-6 mb-6">
+                    <h2 class="text-xl font-bold mb-4">Gastos por Categoría (Año Actual)</h2>
+                    <canvas id="reportCategoryChart" height="80"></canvas>
+                </div>
+                
+                <!-- Top Merchants -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h2 class="text-xl font-bold mb-4">Mayores Gastos por Comerciante</h2>
+                    <div id="topMerchantsList" class="space-y-2">
+                        <div class="text-gray-400 text-sm">No hay datos suficientes</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Importer Page -->
+            <div id="importadorPage" class="page-content hidden">
+                <h1 class="text-3xl font-bold mb-6">Importador Inteligente</h1>
+                
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="mb-4">
+                        <h2 class="text-xl font-bold mb-2">Pega tu Estado de Cuenta</h2>
+                        <p class="text-sm text-gray-600 mb-4">
+                            Copia y pega el texto de tu estado de cuenta bancario o CSV. El motor Zenko analizará y categorizará automáticamente tus transacciones.
+                        </p>
+                        <textarea id="importText" rows="10" 
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                            placeholder="Ejemplo:&#10;15/01/2024 Walmart -450.00&#10;16/01/2024 Deposito Nomina 8500.00&#10;17/01/2024 Netflix -199.00"></textarea>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Cuenta Destino</label>
+                        <select id="importAccount" class="w-full px-4 py-2 border rounded-lg">
+                            <option value="">Selecciona una cuenta</option>
+                        </select>
+                    </div>
+                    
+                    <button onclick="processImport()" class="kitsune-gradient text-white px-6 py-2 rounded-lg font-semibold hover:opacity-90">
+                        🤖 Procesar con IA
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Management Page -->
+            <div id="gestionPage" class="page-content hidden">
+                <h1 class="text-3xl font-bold mb-6">Gestión</h1>
+                
+                <!-- Sub-tabs -->
+                <div class="bg-white rounded-lg shadow mb-6">
+                    <div class="flex border-b">
+                        <button onclick="showManagementTab('bancos')" data-tab="bancos" class="management-tab flex-1 py-3 text-center border-b-2 border-blue-800 text-blue-800 font-medium">
+                            🏦 Bancos
+                        </button>
+                        <button onclick="showManagementTab('cuentas')" data-tab="cuentas" class="management-tab flex-1 py-3 text-center text-gray-500">
+                            💳 Cuentas
+                        </button>
+                        <button onclick="showManagementTab('categorias')" data-tab="categorias" class="management-tab flex-1 py-3 text-center text-gray-500">
+                            🏷️ Categorías
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Banks Management -->
+                <div id="bancosTab" class="management-content">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-bold">Bancos</h2>
+                        <button onclick="openBankModal()" class="bg-blue-800 text-white px-4 py-2 rounded-lg hover:bg-blue-900">
+                            ➕ Nuevo Banco
+                        </button>
+                    </div>
+                    <div id="banksList" class="bg-white rounded-lg shadow divide-y">
+                        <div class="p-8 text-center text-gray-400">
+                            No hay bancos registrados
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Accounts Management -->
+                <div id="cuentasTab" class="management-content hidden">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-bold">Cuentas</h2>
+                        <button onclick="openAccountModal()" class="bg-blue-800 text-white px-4 py-2 rounded-lg hover:bg-blue-900">
+                            ➕ Nueva Cuenta
+                        </button>
+                    </div>
+                    <div id="accountsList" class="bg-white rounded-lg shadow divide-y">
+                        <div class="p-8 text-center text-gray-400">
+                            No hay cuentas registradas
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Categories Management -->
+                <div id="categoriasTab" class="management-content hidden">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-bold">Categorías</h2>
+                        <button onclick="openCategoryModal()" class="bg-blue-800 text-white px-4 py-2 rounded-lg hover:bg-blue-900">
+                            ➕ Nueva Categoría
+                        </button>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <div class="flex space-x-2">
+                            <button onclick="filterCategories('all')" class="category-filter-btn px-4 py-2 rounded bg-blue-800 text-white">
+                                Todas
+                            </button>
+                            <button onclick="filterCategories('ingreso')" class="category-filter-btn px-4 py-2 rounded bg-gray-200">
+                                Ingresos
+                            </button>
+                            <button onclick="filterCategories('gasto')" class="category-filter-btn px-4 py-2 rounded bg-gray-200">
+                                Gastos
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="categoriesList" class="bg-white rounded-lg shadow divide-y">
+                        <div class="p-8 text-center text-gray-400">
+                            No hay categorías registradas
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Profile Page -->
+            <div id="perfilPage" class="page-content hidden">
+                <h1 class="text-3xl font-bold mb-6">The Zenko Way</h1>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Profile Card -->
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="text-center mb-6">
+                            <div id="zenkoAvatar" class="text-6xl mb-2">🦊</div>
+                            <div class="text-2xl font-bold" id="zenkoLevel">Nivel 1</div>
+                            <div class="text-gray-600" id="zenkoTitle">Zenko Novato</div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>Progreso</span>
+                                <span id="xpProgress">0 / 100 XP</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-4">
+                                <div id="xpBar" class="kitsune-gradient h-4 rounded-full progress-bar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center">
+                            <button onclick="navigateTo('dashboard')" class="kitsune-gradient text-white px-6 py-2 rounded-lg hover:opacity-90">
+                                ¡Continuar Mi Viaje!
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Achievements -->
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h2 class="text-xl font-bold mb-4">Logros</h2>
+                        <div id="achievementsList" class="space-y-3">
+                            <!-- Will be populated dynamically -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- User Info -->
+                <div class="mt-6 bg-white rounded-lg shadow p-6">
+                    <h2 class="text-xl font-bold mb-4">Información de Usuario</h2>
+                    <div class="space-y-2">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Email:</span>
+                            <span id="userEmail" class="font-medium">-</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Miembro desde:</span>
+                            <span id="memberSince" class="font-medium">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    
+    <!-- MODALS -->
+    
+    <!-- Transaction Modal -->
+    <div id="transactionModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
+        <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-screen overflow-y-auto">
+            <div class="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center">
+                <h2 class="text-2xl font-bold" id="transactionModalTitle">Nueva Transacción</h2>
+                <button onclick="closeTransactionModal()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+            </div>
+            <form id="transactionForm" class="p-6 space-y-4">
+                <input type="hidden" id="transactionId">
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Cuenta *</label>
+                        <select id="transactionAccount" required class="w-full px-4 py-2 border rounded-lg">
+                            <option value="">Selecciona cuenta</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Tipo *</label>
+                        <select id="transactionType" required onchange="updateCategoryOptions()" class="w-full px-4 py-2 border rounded-lg">
+                            <option value="">Selecciona tipo</option>
+                            <option value="ingreso">💰 Ingreso</option>
+                            <option value="gasto">💸 Gasto</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nombre/Descripción *</label>
+                    <input type="text" id="transactionName" required class="w-full px-4 py-2 border rounded-lg">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Comerciante</label>
+                    <input type="text" id="transactionMerchant" class="w-full px-4 py-2 border rounded-lg" placeholder="Ej: Walmart, Amazon">
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Monto *</label>
+                        <input type="number" id="transactionAmount" required step="0.01" min="0" class="w-full px-4 py-2 border rounded-lg">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Fecha *</label>
+                        <input type="text" id="transactionDate" required class="w-full px-4 py-2 border rounded-lg">
+                    </div>
+                </div>
+                
+                <div>
+                    <div class="flex justify-between items-center mb-1">
+                        <label class="block text-sm font-medium text-gray-700">Categoría *</label>
+                        <button type="button" onclick="openNestedCategoryModal()" class="text-blue-800 text-xs hover:underline">+ Nueva categoría</button>
+                    </div>
+                    <select id="transactionCategory" required class="w-full px-4 py-2 border rounded-lg">
+                        <option value="">Selecciona categoría</option>
+                    </select>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Método de Pago *</label>
+                        <select id="transactionPaymentMethod" required onchange="toggleCardType()" class="w-full px-4 py-2 border rounded-lg">
+                            <option value="">Selecciona método</option>
+                            <option value="Efectivo">💵 Efectivo</option>
+                            <option value="Tarjeta">💳 Tarjeta</option>
+                            <option value="Transferencia">🏦 Transferencia</option>
+                        </select>
+                    </div>
+                    
+                    <div id="cardTypeContainer" class="hidden">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Tarjeta</label>
+                        <select id="transactionCardType" class="w-full px-4 py-2 border rounded-lg">
+                            <option value="">Selecciona tipo</option>
+                            <option value="Crédito">Crédito</option>
+                            <option value="Débito">Débito</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end space-x-3 pt-4">
+                    <button type="button" onclick="closeTransactionModal()" class="px-6 py-2 border rounded-lg hover:bg-gray-100">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="kitsune-gradient text-white px-6 py-2 rounded-lg font-semibold hover:opacity-90">
+                        Guardar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Bank Modal -->
+    <div id="bankModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+            <div class="border-b px-6 py-4 flex justify-between items-center">
+                <h2 class="text-xl font-bold">Nuevo Banco</h2>
+                <button onclick="closeBankModal()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+            </div>
+            <form id="bankForm" class="p-6 space-y-4">
+                <input type="hidden" id="bankId">
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nombre del Banco *</label>
+                    <input type="text" id="bankName" required class="w-full px-4 py-2 border rounded-lg">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Tipo</label>
+                    <select id="bankType" class="w-full px-4 py-2 border rounded-lg">
+                        <option value="Bancario">Bancario</option>
+                        <option value="Digital">Digital</option>
+                        <option value="Fintech">Fintech</option>
+                        <option value="Cooperativa">Cooperativa</option>
+                    </select>
+                </div>
+                
+                <div class="flex justify-end space-x-3 pt-4">
+                    <button type="button" onclick="closeBankModal()" class="px-6 py-2 border rounded-lg hover:bg-gray-100">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="bg-blue-800 text-white px-6 py-2 rounded-lg hover:bg-blue-900">
+                        Guardar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Account Modal -->
+    <div id="accountModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+            <div class="border-b px-6 py-4 flex justify-between items-center">
+                <h2 class="text-xl font-bold">Nueva Cuenta</h2>
+                <button onclick="closeAccountModal()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+            </div>
+            <form id="accountForm" class="p-6 space-y-4">
+                <input type="hidden" id="accountId">
+                
+                <div>
+                    <div class="flex justify-between items-center mb-1">
+                        <label class="block text-sm font-medium text-gray-700">Banco *</label>
+                        <button type="button" onclick="openNestedBankModal()" class="text-blue-800 text-xs hover:underline">+ Nuevo banco</button>
+                    </div>
+                    <select id="accountBank" required class="w-full px-4 py-2 border rounded-lg">
+                        <option value="">Selecciona banco</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nombre de la Cuenta *</label>
+                    <input type="text" id="accountName" required placeholder="Ej: Cuenta de Ahorros" class="w-full px-4 py-2 border rounded-lg">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Últimos 4 Dígitos</label>
+                    <input type="text" id="accountNumber" maxlength="4" pattern="[0-9]{4}" placeholder="1234" class="w-full px-4 py-2 border rounded-lg">
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Moneda *</label>
+                        <select id="accountCurrency" required class="w-full px-4 py-2 border rounded-lg">
+                            <option value="MXN">MXN 🇲🇽</option>
+                            <option value="USD">USD 🇺🇸</option>
+                            <option value="EUR">EUR 🇪🇺</option>
+                            <option value="DOP">DOP 🇩🇴</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Saldo Inicial *</label>
+                        <input type="number" id="accountBalance" required step="0.01" value="0" class="w-full px-4 py-2 border rounded-lg">
+                    </div>
+                </div>
+                
+                <div class="flex justify-end space-x-3 pt-4">
+                    <button type="button" onclick="closeAccountModal()" class="px-6 py-2 border rounded-lg hover:bg-gray-100">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="bg-blue-800 text-white px-6 py-2 rounded-lg hover:bg-blue-900">
+                        Guardar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Category Modal -->
+    <div id="categoryModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+            <div class="border-b px-6 py-4 flex justify-between items-center">
+                <h2 class="text-xl font-bold">Nueva Categoría</h2>
+                <button onclick="closeCategoryModal()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+            </div>
+            <form id="categoryForm" class="p-6 space-y-4">
+                <input type="hidden" id="categoryId">
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nombre *</label>
+                    <input type="text" id="categoryName" required class="w-full px-4 py-2 border rounded-lg">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Icono *</label>
+                    <input type="text" id="categoryIcon" required maxlength="2" placeholder="🏠" class="w-full px-4 py-2 border rounded-lg">
+                    <p class="text-xs text-gray-500 mt-1">Usa un emoji (ej: 🏠 🍔 💼 🎮)</p>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Tipo *</label>
+                    <select id="categoryType" required class="w-full px-4 py-2 border rounded-lg">
+                        <option value="">Selecciona tipo</option>
+                        <option value="ingreso">💰 Ingreso</option>
+                        <option value="gasto">💸 Gasto</option>
+                    </select>
+                </div>
+                
+                <div class="flex justify-end space-x-3 pt-4">
+                    <button type="button" onclick="closeCategoryModal()" class="px-6 py-2 border rounded-lg hover:bg-gray-100">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="bg-blue-800 text-white px-6 py-2 rounded-lg hover:bg-blue-900">
+                        Guardar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Budget Modal -->
+    <div id="budgetModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
+        <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-screen overflow-y-auto">
+            <div class="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center">
+                <h2 class="text-xl font-bold">Editar Presupuestos</h2>
+                <button onclick="closeBudgetModal()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+            </div>
+            <form id="budgetForm" class="p-6">
+                <div id="budgetFormList" class="space-y-4">
+                    <!-- Will be populated dynamically -->
+                </div>
+                
+                <div class="flex justify-end space-x-3 pt-4 mt-6 border-t">
+                    <button type="button" onclick="closeBudgetModal()" class="px-6 py-2 border rounded-lg hover:bg-gray-100">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="bg-blue-800 text-white px-6 py-2 rounded-lg hover:bg-blue-900">
+                        Guardar Todo
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Goal Modal -->
+    <div id="goalModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+            <div class="border-b px-6 py-4 flex justify-between items-center">
+                <h2 class="text-xl font-bold">Nueva Meta</h2>
+                <button onclick="closeGoalModal()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+            </div>
+            <form id="goalForm" class="p-6 space-y-4">
+                <input type="hidden" id="goalId">
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nombre de la Meta *</label>
+                    <input type="text" id="goalName" required placeholder="Ej: Casa nueva, Auto, Vacaciones" class="w-full px-4 py-2 border rounded-lg">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Icono *</label>
+                    <input type="text" id="goalIcon" required maxlength="2" placeholder="🏠" class="w-full px-4 py-2 border rounded-lg">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Monto Objetivo *</label>
+                    <input type="number" id="goalTarget" required step="0.01" min="0" class="w-full px-4 py-2 border rounded-lg">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Cuenta Vinculada</label>
+                    <select id="goalLinkedAccount" class="w-full px-4 py-2 border rounded-lg">
+                        <option value="">Sin vincular</option>
+                    </select>
+                    <p class="text-xs text-gray-500 mt-1">Vincula una cuenta de ahorros para tracking automático</p>
+                </div>
+                
+                <div class="flex justify-end space-x-3 pt-4">
+                    <button type="button" onclick="closeGoalModal()" class="px-6 py-2 border rounded-lg hover:bg-gray-100">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="bg-blue-800 text-white px-6 py-2 rounded-lg hover:bg-blue-900">
+                        Guardar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Investment Modal -->
+    <div id="investmentModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+            <div class="border-b px-6 py-4 flex justify-between items-center">
+                <h2 class="text-xl font-bold">Nuevo Activo</h2>
+                <button onclick="closeInvestmentModal()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+            </div>
+            <form id="investmentForm" class="p-6 space-y-4">
+                <input type="hidden" id="investmentId">
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nombre del Activo *</label>
+                    <input type="text" id="investmentName" required placeholder="Ej: Bitcoin, Tesla, S&P 500" class="w-full px-4 py-2 border rounded-lg">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Símbolo/Ticker *</label>
+                    <input type="text" id="investmentSymbol" required placeholder="BTC, TSLA, SPY" class="w-full px-4 py-2 border rounded-lg">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Icono</label>
+                    <input type="text" id="investmentIcon" maxlength="2" placeholder="📈" class="w-full px-4 py-2 border rounded-lg">
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Cantidad *</label>
+                        <input type="number" id="investmentQuantity" required step="0.00000001" min="0" class="w-full px-4 py-2 border rounded-lg">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Precio de Compra *</label>
+                        <input type="number" id="investmentPrice" required step="0.01" min="0" class="w-full px-4 py-2 border rounded-lg">
+                    </div>
+                </div>
+                
+                <div class="bg-gray-100 p-3 rounded">
+                    <div class="text-sm text-gray-600">Inversión Total:</div>
+                    <div class="text-lg font-bold" id="investmentTotal">$0.00</div>
+                </div>
+                
+                <div class="flex justify-end space-x-3 pt-4">
+                    <button type="button" onclick="closeInvestmentModal()" class="px-6 py-2 border rounded-lg hover:bg-gray-100">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="bg-blue-800 text-white px-6 py-2 rounded-lg hover:bg-blue-900">
+                        Guardar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Subscription Modal -->
+    <div id="subscriptionModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+            <div class="border-b px-6 py-4 flex justify-between items-center">
+                <h2 class="text-xl font-bold">Nueva Suscripción</h2>
+                <button onclick="closeSubscriptionModal()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+            </div>
+            <form id="subscriptionForm" class="p-6 space-y-4">
+                <input type="hidden" id="subscriptionId">
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nombre *</label>
+                    <input type="text" id="subscriptionName" required placeholder="Ej: Netflix, Spotify" class="w-full px-4 py-2 border rounded-lg">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Icono</label>
+                    <input type="text" id="subscriptionIcon" maxlength="2" placeholder="📺" class="w-full px-4 py-2 border rounded-lg">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Monto Mensual *</label>
+                    <input type="number" id="subscriptionAmount" required step="0.01" min="0" class="w-full px-4 py-2 border rounded-lg">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Próxima Fecha de Pago *</label>
+                    <input type="text" id="subscriptionNextDate" required class="w-full px-4 py-2 border rounded-lg">
+                </div>
+                
+                <div class="flex justify-end space-x-3 pt-4">
+                    <button type="button" onclick="closeSubscriptionModal()" class="px-6 py-2 border rounded-lg hover:bg-gray-100">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="bg-blue-800 text-white px-6 py-2 rounded-lg hover:bg-blue-900">
+                        Guardar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Import Review Modal -->
+    <div id="importReviewModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
+        <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-screen overflow-y-auto">
+            <div class="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center">
+                <h2 class="text-xl font-bold">Revisar Transacciones Importadas</h2>
+                <button onclick="closeImportReviewModal()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+            </div>
+            <div class="p-6">
+                <div class="mb-4 bg-blue-50 border border-blue-200 rounded p-3">
+                    <p class="text-sm text-blue-800">
+                        ✨ El motor Zenko ha analizado y categorizado automáticamente tus transacciones. Revisa y confirma antes de importar.
+                    </p>
+                </div>
+                
+                <div id="importReviewList" class="space-y-2 mb-6">
+                    <!-- Will be populated dynamically -->
+                </div>
+                
+                <div class="flex justify-end space-x-3 pt-4 border-t">
+                    <button onclick="closeImportReviewModal()" class="px-6 py-2 border rounded-lg hover:bg-gray-100">
+                        Cancelar
+                    </button>
+                    <button onclick="confirmImport()" class="kitsune-gradient text-white px-6 py-2 rounded-lg font-semibold hover:opacity-90">
+                        Importar Todo
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // ==================== Firebase Configuration ====================
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY_HERE",
+            authDomain: "your-project.firebaseapp.com",
+            projectId: "your-project-id",
+            storageBucket: "your-project.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abcdef123456"
+        };
+        
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        
+        // ==================== Global State ====================
+        let currentUser = null;
+        let currentPage = 'dashboard';
+        let unsubscribers = [];
+        
+        // State objects
+        const state = {
+            banks: [],
+            accounts: [],
+            categories: [],
+            transactions: [],
+            budgets: {},
+            goals: [],
+            investments: [],
+            subscriptions: [],
+            userProfile: {
+                nivel: 1,
+                xp: 0,
+                nextLevelXP: 100,
+                logros: {
+                    primerPaso: false,
+                    centurion: false,
+                    objetivoCumplido: false,
+                    maestroPresupuesto: false
+                }
+            }
+        };
+        
+        // Exchange rates (hardcoded) - Dominican Peso added!
+        const exchangeRates = {
+            MXN: 1,
+            USD: 58.50,
+            EUR: 63.20,
+            DOP: 0.96
+        };
+        
+        // ==================== Banks CRUD ====================
+        function openBankModal(bank = null) {
+            const modal = document.getElementById('bankModal');
+            const form = document.getElementById('bankForm');
+            form.reset();
+            
+            if (bank) {
+                document.getElementById('bankId').value = bank.id;
+                document.getElementById('bankName').value = bank.nombre;
+                document.getElementById('bankType').value = bank.tipo || 'Bancario';
+            }
+            
+            modal.classList.remove('hidden');
+        }
+        
+        function closeBankModal() {
+            document.getElementById('bankModal').classList.add('hidden');
+        }
+        
+        document.getElementById('bankForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const id = document.getElementById('bankId').value;
+            const nombre = document.getElementById('bankName').value;
+            const tipo = document.getElementById('bankType').value;
+            
+            const data = {
+                nombre,
+                tipo,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            
+            try {
+                const userRef = db.collection('users').doc(currentUser.uid).collection('bancos');
+                
+                if (id) {
+                    await userRef.doc(id).update(data);
+                } else {
+                    await userRef.add(data);
+                }
+                
+                closeBankModal();
+            } catch (error) {
+                console.error('Error saving bank:', error);
+                alert('Error al guardar el banco');
+            }
+        });
+        
+        function renderBanksList() {
+            const container = document.getElementById('banksList');
+            
+            if (state.banks.length === 0) {
+                container.innerHTML = '<div class="p-8 text-center text-gray-400">No hay bancos registrados</div>';
+                return;
+            }
+            
+            container.innerHTML = state.banks.map(bank => `
+                <div class="p-4 flex justify-between items-center hover:bg-gray-100">
+                    <div>
+                        <div class="font-medium">🏦 ${bank.nombre}</div>
+                        <div class="text-sm text-gray-500">${bank.tipo}</div>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button onclick='openBankModal(${JSON.stringify(bank).replace(/'/g, "\'")})'
+                            class="text-blue-600 text-sm hover:underline">Editar</button>
+                        <button onclick="deleteBank('${bank.id}')"
+                            class="text-red-500 text-sm hover:underline">Eliminar</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        async function deleteBank(id) {
+            const hasAccounts = state.accounts.some(a => a.bankId === id);
+            if (hasAccounts) {
+                alert('No puedes eliminar un banco con cuentas asociadas');
+                return;
+            }
+            
+            if (!confirm('¿Eliminar este banco?')) return;
+            
+            try {
+                await db.collection('users').doc(currentUser.uid).collection('bancos').doc(id).delete();
+            } catch (error) {
+                console.error('Error deleting bank:', error);
+                alert('Error al eliminar el banco');
+            }
+        }
+        
+        function openNestedBankModal() {
+            const isNested = true;
+            openBankModal();
+            
+            // Store that we're in nested mode
+            document.getElementById('bankForm').dataset.nested = 'true';
+        }
+        
+        // ==================== Accounts CRUD ====================
+        function openAccountModal(account = null) {
+            const modal = document.getElementById('accountModal');
+            const form = document.getElementById('accountForm');
+            form.reset();
+            
+            if (account) {
+                document.getElementById('accountId').value = account.id;
+                document.getElementById('accountBank').value = account.bankId;
+                document.getElementById('accountName').value = account.nombre;
+                document.getElementById('accountNumber').value = account.numero || '';
+                document.getElementById('accountCurrency').value = account.moneda;
+                document.getElementById('accountBalance').value = account.saldo;
+            }
+            
+            updateBankSelects();
+            modal.classList.remove('hidden');
+        }
+        
+        function closeAccountModal() {
+            document.getElementById('accountModal').classList.add('hidden');
+        }
+        
+        document.getElementById('accountForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const id = document.getElementById('accountId').value;
+            const bankId = document.getElementById('accountBank').value;
+            const nombre = document.getElementById('accountName').value;
+            const numero = document.getElementById('accountNumber').value;
+            const moneda = document.getElementById('accountCurrency').value;
+            const saldo = parseFloat(document.getElementById('accountBalance').value);
+            
+            const data = {
+                bankId,
+                nombre,
+                numero,
+                moneda,
+                saldo,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            
+            try {
+                const userRef = db.collection('users').doc(currentUser.uid).collection('cuentas');
+                
+                if (id) {
+                    await userRef.doc(id).update(data);
+                } else {
+                    await userRef.add(data);
+                    await addXP(50);
+                }
+                
+                closeAccountModal();
+            } catch (error) {
+                console.error('Error saving account:', error);
+                alert('Error al guardar la cuenta');
+            }
+        });
+        
+        function renderAccountsList() {
+            const container = document.getElementById('accountsList');
+            
+            if (state.accounts.length === 0) {
+                container.innerHTML = '<div class="p-8 text-center text-gray-400">No hay cuentas registradas</div>';
+                return;
+            }
+            
+            container.innerHTML = state.accounts.map(account => {
+                const bank = state.banks.find(b => b.id === account.bankId);
+                
+                return `
+                    <div class="p-4 flex justify-between items-center hover:bg-gray-100">
+                        <div>
+                            <div class="font-medium">💳 ${account.nombre}</div>
+                            <div class="text-sm text-gray-500">
+                                ${bank ? bank.nombre : 'Banco'} 
+                                ${account.numero ? '****' + account.numero : ''}
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="font-bold text-blue-800">${formatMoney(account.saldo)} ${account.moneda}</div>
+                            <div class="flex space-x-2 mt-1">
+                                <button onclick='openAccountModal(${JSON.stringify(account).replace(/'/g, "\'")})'
+                                    class="text-blue-600 text-xs hover:underline">Editar</button>
+                                <button onclick="deleteAccount('${account.id}')"
+                                    class="text-red-500 text-xs hover:underline">Eliminar</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        async function deleteAccount(id) {
+            const hasTransactions = state.transactions.some(t => t.accountId === id);
+            if (hasTransactions) {
+                alert('No puedes eliminar una cuenta con transacciones');
+                return;
+            }
+            
+            if (!confirm('¿Eliminar esta cuenta?')) return;
+            
+            try {
+                await db.collection('users').doc(currentUser.uid).collection('cuentas').doc(id).delete();
+            } catch (error) {
+                console.error('Error deleting account:', error);
+                alert('Error al eliminar la cuenta');
+            }
+        }
+        
+        // ==================== Categories CRUD ====================
+        function openCategoryModal(category = null) {
+            const modal = document.getElementById('categoryModal');
+            const form = document.getElementById('categoryForm');
+            form.reset();
+            
+            if (category) {
+                document.getElementById('categoryId').value = category.id;
+                document.getElementById('categoryName').value = category.nombre;
+                document.getElementById('categoryIcon').value = category.icono;
+                document.getElementById('categoryType').value = category.tipo;
+            }
+            
+            modal.classList.remove('hidden');
+        }
+        
+        function closeCategoryModal() {
+            document.getElementById('categoryModal').classList.add('hidden');
+        }
+        
+        function openNestedCategoryModal() {
+            const transactionType = document.getElementById('transactionType').value;
+            openCategoryModal();
+            
+            if (transactionType) {
+                document.getElementById('categoryType').value = transactionType;
+            }
+            
+            document.getElementById('categoryForm').dataset.nested = 'true';
+        }
+        
+        document.getElementById('categoryForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const id = document.getElementById('categoryId').value;
+            const nombre = document.getElementById('categoryName').value;
+            const icono = document.getElementById('categoryIcon').value;
+            const tipo = document.getElementById('categoryType').value;
+            
+            const data = {
+                nombre,
+                icono,
+                tipo,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            
+            try {
+                const userRef = db.collection('users').doc(currentUser.uid).collection('categorias');
+                
+                if (id) {
+                    await userRef.doc(id).update(data);
+                } else {
+                    await userRef.add(data);
+                }
+                
+                closeCategoryModal();
+                
+                // If nested, update the transaction form
+                if (document.getElementById('categoryForm').dataset.nested) {
+                    setTimeout(() => {
+                        updateCategoryOptions();
+                        document.getElementById('transactionCategory').value = nombre;
+                    }, 500);
+                    delete document.getElementById('categoryForm').dataset.nested;
+                }
+            } catch (error) {
+                console.error('Error saving category:', error);
+                alert('Error al guardar la categoría');
+            }
+        });
+        
+        let currentCategoryFilter = 'all';
+        
+        function filterCategories(filter) {
+            currentCategoryFilter = filter;
+            renderCategoriesList();
+            
+            // Update button styles
+            document.querySelectorAll('.category-filter-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-800', 'text-white');
+                btn.classList.add('bg-gray-200');
+            });
+            event.target.classList.remove('bg-gray-200');
+            event.target.classList.add('bg-blue-800', 'text-white');
+        }
+        
+        function renderCategoriesList() {
+            const container = document.getElementById('categoriesList');
+            
+            let filtered = state.categories;
+            if (currentCategoryFilter !== 'all') {
+                filtered = state.categories.filter(c => c.tipo === currentCategoryFilter);
+            }
+            
+            if (filtered.length === 0) {
+                container.innerHTML = '<div class="p-8 text-center text-gray-400">No hay categorías en este filtro</div>';
+                return;
+            }
+            
+            container.innerHTML = filtered.map(category => `
+                <div class="p-4 flex justify-between items-center hover:bg-gray-100">
+                    <div class="flex items-center space-x-3">
+                        <span class="text-2xl">${category.icono}</span>
+                        <div>
+                            <div class="font-medium">${category.nombre}</div>
+                            <div class="text-sm text-gray-500">${category.tipo === 'ingreso' ? '💰 Ingreso' : '💸 Gasto'}</div>
+                        </div>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button onclick='openCategoryModal(${JSON.stringify(category).replace(/'/g, "\'")})'
+                            class="text-blue-600 text-sm hover:underline">Editar</button>
+                        <button onclick="deleteCategory('${category.id}')"
+                            class="text-red-500 text-sm hover:underline">Eliminar</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        async function deleteCategory(id) {
+            if (!confirm('¿Eliminar esta categoría?')) return;
+            
+            try {
+                await db.collection('users').doc(currentUser.uid).collection('categorias').doc(id).delete();
+            } catch (error) {
+                console.error('Error deleting category:', error);
+                alert('Error al eliminar la categoría');
+            }
+        }
+        
+        // ==================== Budgets ====================
+        function openBudgetModal() {
+            const modal = document.getElementById('budgetModal');
+            const formList = document.getElementById('budgetFormList');
+            
+            const expenseCategories = state.categories.filter(c => c.tipo === 'gasto');
+            
+            formList.innerHTML = expenseCategories.map(category => {
+                const currentBudget = state.budgets[category.nombre] || 0;
+                
+                return `
+                    <div class="flex items-center space-x-4">
+                        <span class="text-2xl">${category.icono}</span>
+                        <div class="flex-1">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">${category.nombre}</label>
+                            <input type="number" 
+                                data-category="${category.nombre}"
+                                value="${currentBudget}"
+                                step="0.01" min="0"
+                                class="w-full px-4 py-2 border rounded-lg budget-input"
+                                placeholder="0.00">
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            modal.classList.remove('hidden');
+        }
+        
+        function closeBudgetModal() {
+            document.getElementById('budgetModal').classList.add('hidden');
+        }
+        
+        document.getElementById('budgetForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            try {
+                const userRef = db.collection('users').doc(currentUser.uid);
+                const batch = db.batch();
+                
+                document.querySelectorAll('.budget-input').forEach(input => {
+                    const category = input.dataset.category;
+                    const total = parseFloat(input.value) || 0;
+                    
+                    const budgetRef = userRef.collection('presupuestos').doc(category);
+                    batch.set(budgetRef, { total });
+                });
+                
+                await batch.commit();
+                await addXP(25);
+                closeBudgetModal();
+            } catch (error) {
+                console.error('Error saving budgets:', error);
+                alert('Error al guardar presupuestos');
+            }
+        });
+        
+        function renderBudgetsList() {
+            const container = document.getElementById('budgetsList');
+            
+            const now = new Date();
+            const currentMonth = now.getMonth();
+            const currentYear = now.getFullYear();
+            
+            const expenseCategories = state.categories.filter(c => c.tipo === 'gasto');
+            
+            if (expenseCategories.length === 0) {
+                container.innerHTML = '<div class="text-gray-400 text-sm">Crea categorías de gasto primero</div>';
+                return;
+            }
+            
+            container.innerHTML = expenseCategories.map(category => {
+                const budget = state.budgets[category.nombre] || 0;
+                
+                let spent = 0;
+                state.transactions.forEach(tx => {
+                    if (tx.tipo === 'gasto' && tx.categoria === category.nombre) {
+                        const txDate = tx.fecha.toDate();
+                        if (txDate.getMonth() === currentMonth && txDate.getFullYear() === currentYear) {
+                            spent += tx.monto;
+                        }
+                    }
+                });
+                
+                const percentage = budget > 0 ? Math.min((spent / budget) * 100, 100) : 0;
+                const color = percentage > 90 ? 'bg-red-500' : percentage > 70 ? 'bg-yellow-400' : 'bg-green-500';
+                
+                return `
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-sm">
+                            <span>${category.icono} ${category.nombre}</span>
+                            <span class="font-medium">${formatMoney(spent)} / ${formatMoney(budget)}</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="${color} h-2 rounded-full progress-bar" style="width: ${percentage}%"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // ==================== Goals ====================
+        function openGoalModal(goal = null) {
+            const modal = document.getElementById('goalModal');
+            const form = document.getElementById('goalForm');
+            form.reset();
+            
+            if (goal) {
+                document.getElementById('goalId').value = goal.id;
+                document.getElementById('goalName').value = goal.nombre;
+                document.getElementById('goalIcon').value = goal.icono;
+                document.getElementById('goalTarget').value = goal.targetAmount;
+                document.getElementById('goalLinkedAccount').value = goal.linkedAccountId || '';
+            }
+            
+            updateAccountSelects();
+            modal.classList.remove('hidden');
+        }
+        
+        function closeGoalModal() {
+            document.getElementById('goalModal').classList.add('hidden');
+        }
+        
+        document.getElementById('goalForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const id = document.getElementById('goalId').value;
+            const nombre = document.getElementById('goalName').value;
+            const icono = document.getElementById('goalIcon').value;
+            const targetAmount = parseFloat(document.getElementById('goalTarget').value);
+            const linkedAccountId = document.getElementById('goalLinkedAccount').value || null;
+            
+            const data = {
+                nombre,
+                icono,
+                targetAmount,
+                linkedAccountId,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            
+            try {
+                const userRef = db.collection('users').doc(currentUser.uid).collection('objetivos');
+                
+                if (id) {
+                    await userRef.doc(id).update(data);
+                } else {
+                    await userRef.add(data);
+                }
+                
+                closeGoalModal();
+            } catch (error) {
+                console.error('Error saving goal:', error);
+                alert('Error al guardar la meta');
+            }
+        });
+        
+        function renderGoalsList() {
+            const container = document.getElementById('goalsList');
+            
+            if (state.goals.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full text-center text-gray-400 py-12">
+                        No tienes metas creadas. ¡Comienza a definir tus objetivos financieros!
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = state.goals.map(goal => {
+                let currentAmount = 0;
+                
+                if (goal.linkedAccountId) {
+                    const account = state.accounts.find(a => a.id === goal.linkedAccountId);
+                    if (account) {
+                        currentAmount = account.saldo * exchangeRates[account.moneda];
+                    }
+                }
+                
+                const percentage = Math.min((currentAmount / goal.targetAmount) * 100, 100);
+                const isComplete = currentAmount >= goal.targetAmount;
+                
+                if (isComplete && !state.userProfile.logros.objetivoCumplido) {
+                    checkGoalAchievement();
+                }
+                
+                return `
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="text-center mb-4">
+                            <div class="text-4xl mb-2">${goal.icono}</div>
+                            <div class="font-bold text-lg">${goal.nombre}</div>
+                        </div>
+                        
+                        <div class="space-y-2 mb-4">
+                            <div class="flex justify-between text-sm">
+                                <span>Progreso</span>
+                                <span class="font-medium">${formatMoney(currentAmount)} / ${formatMoney(goal.targetAmount)}</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-3">
+                                <div class="kitsune-gradient h-3 rounded-full progress-bar" style="width: ${percentage}%"></div>
+                            </div>
+                            <div class="text-center text-sm font-medium ${isComplete ? 'text-green-500' : 'text-blue-800'}">
+                                ${isComplete ? '🎉 ¡Meta Completada!' : percentage.toFixed(1) + '%'}
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-center space-x-2">
+                            <button onclick='openGoalModal(${JSON.stringify(goal).replace(/'/g, "\'")})'
+                                class="text-blue-600 text-sm hover:underline">Editar</button>
+                            <span class="text-gray-300">|</span>
+                            <button onclick="deleteGoal('${goal.id}')"
+                                class="text-red-500 text-sm hover:underline">Eliminar</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        async function deleteGoal(id) {
+            if (!confirm('¿Eliminar esta meta?')) return;
+            
+            try {
+                await db.collection('users').doc(currentUser.uid).collection('objetivos').doc(id).delete();
+            } catch (error) {
+                console.error('Error deleting goal:', error);
+                alert('Error al eliminar la meta');
+            }
+        }
+        
+        async function checkGoalAchievement() {
+            const hasCompletedGoal = state.goals.some(goal => {
+                if (goal.linkedAccountId) {
+                    const account = state.accounts.find(a => a.id === goal.linkedAccountId);
+                    if (account) {
+                        const currentAmount = account.saldo * exchangeRates[account.moneda];
+                        return currentAmount >= goal.targetAmount;
+                    }
+                }
+                return false;
+            });
+            
+            if (hasCompletedGoal && !state.userProfile.logros.objetivoCumplido) {
+                await addXP(100);
+                await unlockAchievement('objetivoCumplido');
+            }
+        }
+        
+        // ==================== Investments ====================
+        function openInvestmentModal(investment = null) {
+            const modal = document.getElementById('investmentModal');
+            const form = document.getElementById('investmentForm');
+            form.reset();
+            
+            if (investment) {
+                document.getElementById('investmentId').value = investment.id;
+                document.getElementById('investmentName').value = investment.nombre;
+                document.getElementById('investmentSymbol').value = investment.simbolo;
+                document.getElementById('investmentIcon').value = investment.icono || '';
+                document.getElementById('investmentQuantity').value = investment.cantidad;
+                document.getElementById('investmentPrice').value = investment.precio;
+                calculateInvestmentTotal();
+            }
+            
+            modal.classList.remove('hidden');
+        }
+        
+        function closeInvestmentModal() {
+            document.getElementById('investmentModal').classList.add('hidden');
+        }
+        
+        document.getElementById('investmentQuantity').addEventListener('input', calculateInvestmentTotal);
+        document.getElementById('investmentPrice').addEventListener('input', calculateInvestmentTotal);
+        
+        function calculateInvestmentTotal() {
+            const quantity = parseFloat(document.getElementById('investmentQuantity').value) || 0;
+            const price = parseFloat(document.getElementById('investmentPrice').value) || 0;
+            const total = quantity * price;
+            
+            document.getElementById('investmentTotal').textContent = formatMoney(total);
+        }
+        
+        document.getElementById('investmentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const id = document.getElementById('investmentId').value;
+            const nombre = document.getElementById('investmentName').value;
+            const simbolo = document.getElementById('investmentSymbol').value.toUpperCase();
+            const icono = document.getElementById('investmentIcon').value || '📈';
+            const cantidad = parseFloat(document.getElementById('investmentQuantity').value);
+            const precio = parseFloat(document.getElementById('investmentPrice').value);
+            
+            const data = {
+                nombre,
+                simbolo,
+                icono,
+                cantidad,
+                precio,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            
+            try {
+                const userRef = db.collection('users').doc(currentUser.uid).collection('inversiones');
+                
+                if (id) {
+                    await userRef.doc(id).update(data);
+                } else {
+                    await userRef.add(data);
+                }
+                
+                closeInvestmentModal();
+            } catch (error) {
+                console.error('Error saving investment:', error);
+                alert('Error al guardar la inversión');
+            }
+        });
+        
+        function renderInvestmentsList() {
+            const container = document.getElementById('investmentsList');
+            
+            if (state.investments.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full text-center text-gray-400 py-12">
+                        No tienes inversiones registradas. ¡Comienza a construir tu portafolio!
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = state.investments.map(inv => {
+                const totalValue = inv.cantidad * inv.precio;
+                
+                return `
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <div class="text-2xl mb-2">${inv.icono}</div>
+                                <div class="font-bold">${inv.nombre}</div>
+                                <div class="text-sm text-gray-500">${inv.simbolo}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-2 mb-4">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Cantidad:</span>
+                                <span class="font-medium">${inv.cantidad}</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Precio:</span>
+                                <span class="font-medium">${formatMoney(inv.precio)}</span>
+                            </div>
+                            <div class="flex justify-between font-bold text-blue-800">
+                                <span>Valor Total:</span>
+                                <span>${formatMoney(totalValue)}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-center space-x-2">
+                            <button onclick='openInvestmentModal(${JSON.stringify(inv).replace(/'/g, "\'")})'
+                                class="text-blue-600 text-sm hover:underline">Editar</button>
+                            <span class="text-gray-300">|</span>
+                            <button onclick="deleteInvestment('${inv.id}')"
+                                class="text-red-500 text-sm hover:underline">Eliminar</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        async function deleteInvestment(id) {
+            if (!confirm('¿Eliminar esta inversión?')) return;
+            
+            try {
+                await db.collection('users').doc(currentUser.uid).collection('inversiones').doc(id).delete();
+            } catch (error) {
+                console.error('Error deleting investment:', error);
+                alert('Error al eliminar la inversión');
+            }
+        }
+        
+        function calculatePortfolioMetrics() {
+            let totalValue = 0;
+            let totalInvested = 0;
+            
+            state.investments.forEach(inv => {
+                const value = inv.cantidad * inv.precio;
+                totalValue += value;
+                totalInvested += value; // In real app, track purchase price separately
+            });
+            
+            const returnAmount = totalValue - totalInvested;
+            const returnPercentage = totalInvested > 0 ? (returnAmount / totalInvested) * 100 : 0;
+            
+            document.getElementById('portfolioValue').textContent = formatMoney(totalValue);
+            document.getElementById('portfolioInvested').textContent = formatMoney(totalInvested);
+            
+            const returnElement = document.getElementById('portfolioReturn');
+            returnElement.textContent = returnPercentage.toFixed(2) + '%';
+            returnElement.className = returnPercentage >= 0 ? 'text-2xl font-bold text-green-500' : 'text-2xl font-bold text-red-500';
+        }
+        
+        // ==================== Subscriptions ====================
+        function openSubscriptionModal(subscription = null) {
+            const modal = document.getElementById('subscriptionModal');
+            const form = document.getElementById('subscriptionForm');
+            form.reset();
+            
+            if (subscription) {
+                document.getElementById('subscriptionId').value = subscription.id;
+                document.getElementById('subscriptionName').value = subscription.nombre;
+                document.getElementById('subscriptionIcon').value = subscription.icono || '';
+                document.getElementById('subscriptionAmount').value = subscription.monto;
+                document.getElementById('subscriptionNextDate').value = subscription.proximaFecha.toDate().toISOString().split('T')[0];
+            }
+            
+            modal.classList.remove('hidden');
+        }
+        
+        function closeSubscriptionModal() {
+            document.getElementById('subscriptionModal').classList.add('hidden');
+        }
+        
+        document.getElementById('subscriptionForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const id = document.getElementById('subscriptionId').value;
+            const nombre = document.getElementById('subscriptionName').value;
+            const icono = document.getElementById('subscriptionIcon').value || '🔄';
+            const monto = parseFloat(document.getElementById('subscriptionAmount').value);
+            const proximaFecha = new Date(document.getElementById('subscriptionNextDate').value);
+            
+            const data = {
+                nombre,
+                icono,
+                monto,
+                proximaFecha: firebase.firestore.Timestamp.fromDate(proximaFecha),
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            
+            try {
+                const userRef = db.collection('users').doc(currentUser.uid).collection('suscripciones');
+                
+                if (id) {
+                    await userRef.doc(id).update(data);
+                } else {
+                    await userRef.add(data);
+                }
+                
+                closeSubscriptionModal();
+            } catch (error) {
+                console.error('Error saving subscription:', error);
+                alert('Error al guardar la suscripción');
+            }
+        });
+        
+        function renderSubscriptionsList() {
+            const container = document.getElementById('subscriptionsList');
+            
+            if (state.subscriptions.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full text-center text-gray-400 py-12">
+                        No tienes suscripciones registradas
+                    </div>
+                `;
+                return;
+            }
+            
+            const now = new Date();
+            
+            container.innerHTML = state.subscriptions.map(sub => {
+                const nextDate = sub.proximaFecha.toDate();
+                const daysUntil = Math.ceil((nextDate - now) / (1000 * 60 * 60 * 24));
+                const isUpcoming = daysUntil <= 7 && daysUntil >= 0;
+                
+                return `
+                    <div class="bg-white rounded-lg shadow p-6 ${isUpcoming ? 'border-2 border-yellow-400' : ''}">
+                        <div class="text-center mb-4">
+                            <div class="text-4xl mb-2">${sub.icono}</div>
+                            <div class="font-bold text-lg">${sub.nombre}</div>
+                        </div>
+                        
+                        <div class="text-center mb-4">
+                            <div class="text-2xl font-bold text-blue-800">${formatMoney(sub.monto)}</div>
+                            <div class="text-sm text-gray-500">por mes</div>
+                        </div>
+                        
+                        <div class="text-center mb-4">
+                            <div class="text-sm text-gray-600">Próximo pago:</div>
+                            <div class="font-medium ${isUpcoming ? 'text-yellow-600' : ''}">${formatDate(sub.proximaFecha)}</div>
+                            ${isUpcoming ? '<div class="text-xs text-yellow-600 mt-1">⚠️ Próximamente</div>' : ''}
+                        </div>
+                        
+                        <div class="flex justify-center space-x-2">
+                            <button onclick='openSubscriptionModal(${JSON.stringify(sub).replace(/'/g, "\'")})'
+                                class="text-blue-600 text-sm hover:underline">Editar</button>
+                            <span class="text-gray-300">|</span>
+                            <button onclick="deleteSubscription('${sub.id}')"
+                                class="text-red-500 text-sm hover:underline">Eliminar</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        async function deleteSubscription(id) {
+            if (!confirm('¿Eliminar esta suscripción?')) return;
+            
+            try {
+                await db.collection('users').doc(currentUser.uid).collection('suscripciones').doc(id).delete();
+            } catch (error) {
+                console.error('Error deleting subscription:', error);
+                alert('Error al eliminar la suscripción');
+            }
+        }
+        
+        function calculateSubscriptionsTotal() {
+            const total = state.subscriptions.reduce((sum, sub) => sum + sub.monto, 0);
+            document.getElementById('totalSubscriptions').textContent = formatMoney(total);
+        }
+        
+        // ==================== Smart Importer ====================
+        let parsedTransactions = [];
+        
+        function processImport() {
+            const text = document.getElementById('importText').value;
+            const accountId = document.getElementById('importAccount').value;
+            
+            if (!text.trim()) {
+                alert('Por favor ingresa el texto a importar');
+                return;
+            }
+            
+            if (!accountId) {
+                alert('Por favor selecciona una cuenta destino');
+                return;
+            }
+            
+            parsedTransactions = parseTransactionsText(text, accountId);
+            
+            if (parsedTransactions.length === 0) {
+                alert('No se pudieron detectar transacciones en el texto');
+                return;
+            }
+            
+            showImportReviewModal();
+        }
+        
+        function parseTransactionsText(text, accountId) {
+            const lines = text.split('\n').filter(line => line.trim());
+            const transactions = [];
+            
+            const categoryKeywords = {
+                'Supermercado': ['walmart', 'soriana', 'superama', 'chedraui', 'oxxo'],
+                'Restaurantes': ['restaurant', 'comida', 'pizza', 'burger', 'starbucks', 'subway'],
+                'Entretenimiento': ['netflix', 'spotify', 'amazon', 'cine', 'disney'],
+                'Transporte': ['uber', 'gasolina', 'combustible', 'taxi'],
+                'Servicios': ['luz', 'agua', 'gas', 'internet', 'telefono', 'cfe'],
+                'Salud': ['farmacia', 'doctor', 'hospital', 'medico'],
+                'Nómina': ['nomina', 'salario', 'sueldo', 'pago'],
+                'Otros': []
+            };
+            
+            lines.forEach(line => {
+                // Try to parse: date description amount
+                const dateRegex = /\b\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}\b/;
+                const amountRegex = /[-+]?[\d,]+\.?\d*/;
+                
+                const dateMatch = line.match(dateRegex);
+                const amounts = line.match(new RegExp(amountRegex, 'g'));
+                
+                if (dateMatch && amounts && amounts.length > 0) {
+                    const dateStr = dateMatch[0];
+                    const amount = parseFloat(amounts[amounts.length - 1].replace(',', ''));
+                    
+                    if (isNaN(amount) || amount === 0) return;
+                    
+                    // Extract description (text between date and amount)
+                    const description = line
+                        .replace(dateMatch[0], '')
+                        .replace(amounts[amounts.length - 1], '')
+                        .trim();
+                    
+                    // Determine type
+                    const tipo = amount > 0 ? 'ingreso' : 'gasto';
+                    const monto = Math.abs(amount);
+                    
+                    // Categorize
+                    let categoria = 'Otros';
+                    const lowerDesc = description.toLowerCase();
+                    
+                    for (const [cat, keywords] of Object.entries(categoryKeywords)) {
+                        if (keywords.some(keyword => lowerDesc.includes(keyword))) {
+                            categoria = cat;
+                            break;
+                        }
+                    }
+                    
+                    // Parse date
+                    const dateParts = dateStr.split(/[\/\-]/);
+                    let fecha;
+                    if (dateParts.length === 3) {
+                        const day = parseInt(dateParts[0]);
+                        const month = parseInt(dateParts[1]) - 1;
+                        const year = dateParts[2].length === 2 ? 2000 + parseInt(dateParts[2]) : parseInt(dateParts[2]);
+                        fecha = new Date(year, month, day);
+                    } else {
+                        fecha = new Date();
+                    }
+                    
+                    transactions.push({
+                        accountId,
+                        nombre: description || 'Transacción importada',
+                        comerciante: description.split(' ')[0] || '',
+                        monto,
+                        tipo,
+                        categoria,
+                        fecha,
+                        metodoPago: 'Tarjeta',
+                        tipoTarjeta: null
+                    });
+                }
+            });
+            
+            return transactions;
+        }
+        
+        function showImportReviewModal() {
+            const modal = document.getElementById('importReviewModal');
+            const list = document.getElementById('importReviewList');
+            
+            list.innerHTML = parsedTransactions.map((tx, index) => {
+                const category = state.categories.find(c => c.nombre === tx.categoria && c.tipo === tx.tipo);
+                
+                return `
+                    <div class="bg-gray-100 p-3 rounded flex justify-between items-center">
+                        <div class="flex items-center space-x-3">
+                            <span class="text-xl">${category ? category.icono : (tx.tipo === 'ingreso' ? '💰' : '💸')}</span>
+                            <div>
+                                <div class="font-medium">${tx.nombre}</div>
+                                <div class="text-xs text-gray-500">${tx.categoria} • ${tx.fecha.toLocaleDateString()}</div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="font-bold ${tx.tipo === 'ingreso' ? 'text-green-500' : 'text-red-500'}">
+                                ${tx.tipo === 'ingreso' ? '+' : '-'}${formatMoney(tx.monto)}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            modal.classList.remove('hidden');
+        }
+        
+        function closeImportReviewModal() {
+            document.getElementById('importReviewModal').classList.add('hidden');
+        }
+        
+        async function confirmImport() {
+            if (parsedTransactions.length === 0) return;
+            
+            try {
+                const userRef = db.collection('users').doc(currentUser.uid);
+                const batch = db.batch();
+                
+                parsedTransactions.forEach(tx => {
+                    const txData = {
+                        ...tx,
+                        fecha: firebase.firestore.Timestamp.fromDate(tx.fecha),
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    };
+                    
+                    batch.set(userRef.collection('transacciones').doc(), txData);
+                    
+                    // Update account balance
+                    const accountRef = userRef.collection('cuentas').doc(tx.accountId);
+                    const balanceChange = tx.tipo === 'ingreso' ? tx.monto : -tx.monto;
+                    batch.update(accountRef, {
+                        saldo: firebase.firestore.FieldValue.increment(balanceChange)
+                    });
+                });
+                
+                await batch.commit();
+                await addXP(parsedTransactions.length * 5);
+                
+                closeImportReviewModal();
+                document.getElementById('importText').value = '';
+                parsedTransactions = [];
+                
+                alert(`✅ ${parsedTransactions.length} transacciones importadas exitosamente`);
+                navigateTo('transacciones');
+            } catch (error) {
+                console.error('Error importing transactions:', error);
+                alert('Error al importar transacciones');
+            }
+        }
+        
+        // ==================== Gamification ====================
+        async function addXP(amount) {
+            if (!currentUser) return;
+            
+            const profileRef = db.collection('users').doc(currentUser.uid).collection('user_profile').doc('profile');
+            const doc = await profileRef.get();
+            
+            if (!doc.exists) {
+                await initializeUserProfile();
+                return;
+            }
+            
+            const profile = doc.data();
+            let newXP = profile.xp + amount;
+            let newLevel = profile.nivel;
+            let newNextLevelXP = profile.nextLevelXP;
+            
+            // Level up logic
+            while (newXP >= newNextLevelXP) {
+                newXP -= newNextLevelXP;
+                newLevel++;
+                newNextLevelXP = newLevel * 100; // 100 XP per level
+            }
+            
+            await profileRef.update({
+                xp: newXP,
+                nivel: newLevel,
+                nextLevelXP: newNextLevelXP
+            });
+        }
+        
+        async function unlockAchievement(achievementKey) {
+            if (!currentUser) return;
+            
+            const profileRef = db.collection('users').doc(currentUser.uid).collection('user_profile').doc('profile');
+            await profileRef.update({
+                [`logros.${achievementKey}`]: true
+            });
+        }
+        
+        function checkAchievements() {
+            // First transaction
+            if (state.transactions.length >= 1 && !state.userProfile.logros.primerPaso) {
+                unlockAchievement('primerPaso');
+            }
+            
+            // 100 transactions
+            if (state.transactions.length >= 100 && !state.userProfile.logros.centurion) {
+                unlockAchievement('centurion');
+            }
+        }
+        
+        function updateProfileDisplay() {
+            const profile = state.userProfile;
+            
+            // Update XP display in nav
+            document.getElementById('userXP').textContent = `${profile.xp} XP`;
+            
+            // Update profile page
+            document.getElementById('zenkoLevel').textContent = `Nivel ${profile.nivel}`;
+            
+            const titles = [
+                'Zenko Novato', 'Zenko Aprendiz', 'Zenko Guardián', 
+                'Zenko Sabio', 'Zenko Maestro', 'Zenko Legendario',
+                'Zenko de Nueve Colas', 'Zenko Divino', 'Zenko Celestial'
+            ];
+            const titleIndex = Math.min(profile.nivel - 1, titles.length - 1);
+            document.getElementById('zenkoTitle').textContent = titles[titleIndex];
+            
+            // Avatar with tails
+            const tails = Math.min(Math.ceil(profile.nivel / 3), 9);
+            const tailsDisplay = '🦊'.repeat(Math.min(tails, 3));
+            document.getElementById('zenkoAvatar').textContent = tailsDisplay;
+            
+            // Progress bar
+            const percentage = (profile.xp / profile.nextLevelXP) * 100;
+            document.getElementById('xpBar').style.width = percentage + '%';
+            document.getElementById('xpProgress').textContent = `${profile.xp} / ${profile.nextLevelXP} XP`;
+            
+            // Achievements
+            renderAchievements();
+            
+            // User info
+            if (currentUser) {
+                document.getElementById('userEmail').textContent = currentUser.email;
+                document.getElementById('memberSince').textContent = new Date(currentUser.metadata.creationTime).toLocaleDateString();
+            }
+        }
+        
+        function renderAchievements() {
+            const container = document.getElementById('achievementsList');
+            
+            const achievements = [
+                {
+                    key: 'primerPaso',
+                    icon: '🏁',
+                    name: 'Primer Paso',
+                    description: 'Registra tu primera transacción'
+                },
+                {
+                    key: 'centurion',
+                    icon: '💯',
+                    name: 'Centurión',
+                    description: 'Registra 100 transacciones'
+                },
+                {
+                    key: 'objetivoCumplido',
+                    icon: '🎯',
+                    name: 'Objetivo Cumplido',
+                    description: 'Completa tu primera meta financiera'
+                },
+                {
+                    key: 'maestroPresupuesto',
+                    icon: '🏆',
+                    name: 'Maestro del Presupuesto',
+                    description: '3 meses sin exceder tu presupuesto'
+                }
+            ];
+            
+            container.innerHTML = achievements.map(ach => {
+                const unlocked = state.userProfile.logros[ach.key];
+                
+                return `
+                    <div class="flex items-center space-x-3 p-3 rounded ${unlocked ? 'bg-blue-50' : 'bg-gray-100'}">
+                        <div class="text-3xl ${unlocked ? '' : 'grayscale opacity-50'}">${ach.icon}</div>
+                        <div class="flex-1">
+                            <div class="font-medium ${unlocked ? 'text-gray-800' : 'text-gray-600'}">${ach.name}</div>
+                            <div class="text-sm ${unlocked ? 'text-blue-800' : 'text-gray-500'}">${ach.description}</div>
+                        </div>
+                        ${unlocked ? '<div class="text-blue-800 font-bold">✓</div>' : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // ==================== Utility Functions ====================
+        function updateBankSelects() {
+            const selects = ['accountBank'];
+            
+            selects.forEach(selectId => {
+                const select = document.getElementById(selectId);
+                if (!select) return;
+                
+                const currentValue = select.value;
+                select.innerHTML = '<option value="">Selecciona banco</option>' +
+                    state.banks.map(bank => `<option value="${bank.id}">${bank.nombre}</option>`).join('');
+                
+                if (currentValue) {
+                    select.value = currentValue;
+                }
+            });
+        }
+        
+        function updateAccountSelects() {
+            const selects = ['transactionAccount', 'importAccount', 'goalLinkedAccount', 'filterAccount'];
+            
+            selects.forEach(selectId => {
+                const select = document.getElementById(selectId);
+                if (!select) return;
+                
+                const currentValue = select.value;
+                const defaultOption = selectId === 'goalLinkedAccount' ? 
+                    '<option value="">Sin vincular</option>' : 
+                    '<option value="">Selecciona cuenta</option>';
+                
+                select.innerHTML = defaultOption +
+                    state.accounts.map(account => {
+                        const bank = state.banks.find(b => b.id === account.bankId);
+                        return `<option value="${account.id}">${account.nombre} (${bank ? bank.nombre : 'Banco'}) - ${account.moneda}</option>`;
+                    }).join('');
+                
+                if (currentValue) {
+                    select.value = currentValue;
+                }
+            });
+        }
+        
+        function updateCategorySelects() {
+            const select = document.getElementById('filterCategory');
+            if (!select) return;
+            
+            const currentValue = select.value;
+            select.innerHTML = '<option value="">Todas</option>' +
+                state.categories.map(c => `<option value="${c.nombre}">${c.icono} ${c.nombre}</option>`).join('');
+            
+            if (currentValue) {
+                select.value = currentValue;
+            }
+        }
+        
+        function formatMoney(amount) {
+            return new Intl.NumberFormat('es-MX', {
+                style: 'currency',
+                currency: 'MXN'
+            }).format(amount);
+        }
+        
+        function formatDate(firestoreTimestamp) {
+            if (!firestoreTimestamp) return '';
+            const date = firestoreTimestamp.toDate ? firestoreTimestamp.toDate() : new Date(firestoreTimestamp);
+            return date.toLocaleDateString('es-MX', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+        
+        function getLast6Months() {
+            const months = [];
+            const now = new Date();
+            
+            for (let i = 5; i >= 0; i--) {
+                const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                months.push({
+                    month: date.getMonth(),
+                    year: date.getFullYear(),
+                    label: date.toLocaleDateString('es-MX', { month: 'short', year: 'numeric' })
+                });
+            }
+            
+            return months;
+        }
+        
+        function getLast12Months() {
+            const months = [];
+            const now = new Date();
+            
+            for (let i = 11; i >= 0; i--) {
+                const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                months.push({
+                    month: date.getMonth(),
+                    year: date.getFullYear(),
+                    label: date.toLocaleDateString('es-MX', { month: 'short' })
+                });
+            }
+            
+            return months;
+        }
+    </script>
 </body>
 </html>
