@@ -809,6 +809,7 @@
                             <option value="MXN">MXN 🇲🇽</option>
                             <option value="USD">USD 🇺🇸</option>
                             <option value="EUR">EUR 🇪🇺</option>
+                            <option value="DOP">DOP 🇩🇴</option>
                         </select>
                     </div>
                     
@@ -1067,6 +1068,57 @@
         </div>
     </div>
     
+    <script>
+        // ==================== Firebase Configuration ====================
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY_HERE",
+            authDomain: "your-project.firebaseapp.com",
+            projectId: "your-project-id",
+            storageBucket: "your-project.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abcdef123456"
+        };
+        
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        
+        // ==================== Global State ====================
+        let currentUser = null;
+        let currentPage = 'dashboard';
+        let unsubscribers = [];
+        
+        // State objects
+        const state = {
+            banks: [],
+            accounts: [],
+            categories: [],
+            transactions: [],
+            budgets: {},
+            goals: [],
+            investments: [],
+            subscriptions: [],
+            userProfile: {
+                nivel: 1,
+                xp: 0,
+                nextLevelXP: 100,
+                logros: {
+                    primerPaso: false,
+                    centurion: false,
+                    objetivoCumplido: false,
+                    maestroPresupuesto: false
+                }
+            }
+        };
+        
+        // Exchange rates (hardcoded) - Dominican Peso added!
+        const exchangeRates = {
+            MXN: 1,
+            USD: 58.50,
+            EUR: 63.20,
+            DOP: 0.96
+        };
         
         // ==================== Banks CRUD ====================
         function openBankModal(bank = null) {

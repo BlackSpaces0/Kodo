@@ -21,7 +21,7 @@ Zenko Financial es una aplicación web moderna de gestión financiera personal q
 ### 💰 Gestión Financiera Completa
 - **Dashboard Intuitivo**: Visualiza tu situación financiera de un vistazo
 - **Transacciones**: CRUD completo con filtros avanzados (fecha, cuenta, tipo, categoría)
-- **Cuentas Múltiples**: Gestiona cuentas bancarias con diferentes monedas (MXN, USD, EUR)
+- **Cuentas Múltiples**: Gestiona cuentas bancarias con diferentes monedas (MXN, USD, EUR, DOP)
 - **Presupuestos Inteligentes**: Control de gastos por categoría con alertas visuales
 - **Metas Financieras**: Define y alcanza objetivos vinculados a cuentas de ahorro
 - **Inversiones**: Rastrea tu portafolio con cálculo automático de rendimiento
@@ -199,7 +199,7 @@ Abre: `http://localhost:8000`
 │       ├── bankId: string (referencia a bancos)
 │       ├── nombre: string
 │       ├── numero: string (últimos 4 dígitos)
-│       ├── moneda: string ("MXN" | "USD" | "EUR")
+│       ├── moneda: string ("MXN" | "USD" | "EUR" | "DOP")
 │       ├── saldo: number
 │       ├── color: string (gradiente CSS)
 │       └── timestamp: Date
