@@ -21,52 +21,99 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
+        /* Material 3 Expressive - Estrategia Kitsune Financiera */
+        :root {
+            /* Primary Colors */
+            --color-primary: #1E3A8A; /* Azul Zafiro */
+            --color-graphite: #2D3748; /* Gris Grafito */
+            
+            /* Functional Colors */
+            --color-success: #48BB78; /* Verde Azulado */
+            --color-danger: #E53E3E; /* Rojo Peligro */
+            --color-info: #63B3ED; /* Azul Claro */
+            
+            /* Light Mode */
+            --bg-primary-light: #F7FAFC; /* Blanco Cremoso */
+            --bg-card-light: #FFFFFF; /* Blanco Puro */
+            
+            /* Dark Mode */
+            --bg-primary-dark: #121212; /* Negro Carbón */
+            --bg-card-dark: #1E1E1E; /* Gris Oscuro */
+        }
+        
         body {
             font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary-light);
         }
         
+        /* Primary Gradient - Azul Zafiro */
         .kitsune-gradient {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1E3A8A 0%, #1E40AF 50%, #2563EB 100%);
         }
         
+        /* Info Gradient - Azul Claro */
         .kitsune-gradient-alt {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            background: linear-gradient(135deg, #63B3ED 0%, #3B82F6 100%);
         }
         
+        /* Success Gradient - Verde Azulado */
+        .success-gradient {
+            background: linear-gradient(135deg, #48BB78 0%, #38A169 100%);
+        }
+        
+        /* Material 3 Elevation & Shadows */
+        .elevation-1 {
+            box-shadow: 0 1px 3px rgba(30, 58, 138, 0.12), 0 1px 2px rgba(30, 58, 138, 0.08);
+        }
+        
+        .elevation-2 {
+            box-shadow: 0 3px 6px rgba(30, 58, 138, 0.15), 0 2px 4px rgba(30, 58, 138, 0.12);
+        }
+        
+        .elevation-3 {
+            box-shadow: 0 10px 20px rgba(30, 58, 138, 0.15), 0 3px 6px rgba(30, 58, 138, 0.10);
+        }
+        
+        /* Smooth Animations */
         .fade-in {
-            animation: fadeIn 0.3s ease-in;
+            animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(12px); }
             to { opacity: 1; transform: translateY(0); }
         }
         
         .modal-backdrop {
-            background-color: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(4px);
+            background-color: rgba(18, 18, 18, 0.6);
+            backdrop-filter: blur(8px);
         }
         
+        /* Material 3 Interactive States */
         .card-hover {
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+                        box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         .card-hover:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(30, 58, 138, 0.15), 0 4px 8px rgba(30, 58, 138, 0.1);
         }
         
+        /* Active Tab Style */
         .tab-active {
-            border-bottom: 2px solid #667eea;
-            color: #667eea;
+            border-bottom: 3px solid var(--color-primary);
+            color: var(--color-primary);
             font-weight: 600;
         }
         
+        /* Progress Bar with Material 3 Motion */
         .progress-bar {
-            transition: width 0.5s ease;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 8px;
         }
         
-        /* Hide scrollbar but keep functionality */
+        /* Custom Scrollbar */
         .hide-scrollbar::-webkit-scrollbar {
             display: none;
         }
@@ -74,9 +121,24 @@
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
+        
+        /* Material 3 Button States */
+        .btn-primary {
+            background-color: var(--color-primary);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .btn-primary:hover {
+            background-color: #1E40AF;
+            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.3);
+        }
+        
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
     </style>
 </head>
-<body class="bg-gray-50">
+<body class="bg-gray-100">
     
     <!-- Auth Page -->
     <div id="authPage" class="min-h-screen flex items-center justify-center p-4">
@@ -99,12 +161,12 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Correo Electrónico</label>
                         <input type="email" id="loginEmail" required 
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
                         <input type="password" id="loginPassword" required 
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                     </div>
                     <div id="loginError" class="text-red-500 text-sm hidden"></div>
                     <button type="submit" class="w-full kitsune-gradient text-white py-3 rounded-lg font-semibold hover:opacity-90 transition">
@@ -117,17 +179,17 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Correo Electrónico</label>
                         <input type="email" id="registerEmail" required 
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
                         <input type="password" id="registerPassword" required minlength="6"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Confirmar Contraseña</label>
                         <input type="password" id="registerPasswordConfirm" required minlength="6"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                     </div>
                     <div id="registerError" class="text-red-500 text-sm hidden"></div>
                     <button type="submit" class="w-full kitsune-gradient-alt text-white py-3 rounded-lg font-semibold hover:opacity-90 transition">
@@ -206,10 +268,10 @@
                 <h1 class="text-3xl font-bold mb-6">Tu Estrategia</h1>
                 
                 <!-- Welcome Card for New Users -->
-                <div id="welcomeCard" class="hidden bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg p-6 mb-6">
+                <div id="welcomeCard" class="hidden bg-gradient-to-r from-blue-500 to-pink-500 text-white rounded-lg p-6 mb-6">
                     <h2 class="text-2xl font-bold mb-2">¡Bienvenido a Zenko Financial! 🦊</h2>
                     <p class="mb-4">Comienza tu viaje financiero creando tu primera cuenta y transacción.</p>
-                    <button onclick="navigateTo('gestion')" class="bg-white text-purple-600 px-6 py-2 rounded-lg font-semibold hover:bg-opacity-90">
+                    <button onclick="navigateTo('gestion')" class="bg-white text-blue-800 px-6 py-2 rounded-lg font-semibold hover:bg-opacity-90">
                         Configurar Ahora
                     </button>
                 </div>
@@ -218,17 +280,17 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                     <div class="bg-white rounded-lg shadow p-6">
                         <div class="text-sm text-gray-500 mb-1">Saldo Total</div>
-                        <div class="text-3xl font-bold text-purple-600" id="totalBalance">$0.00</div>
+                        <div class="text-3xl font-bold text-blue-800" id="totalBalance">$0.00</div>
                         <div class="text-xs text-gray-400 mt-1">MXN</div>
                     </div>
                     <div class="bg-white rounded-lg shadow p-6">
                         <div class="text-sm text-gray-500 mb-1">Ingresos del Mes</div>
-                        <div class="text-3xl font-bold text-green-600" id="monthIncome">$0.00</div>
+                        <div class="text-3xl font-bold text-green-500" id="monthIncome">$0.00</div>
                         <div class="text-xs text-gray-400 mt-1">↗️ Este mes</div>
                     </div>
                     <div class="bg-white rounded-lg shadow p-6">
                         <div class="text-sm text-gray-500 mb-1">Gastos del Mes</div>
-                        <div class="text-3xl font-bold text-red-600" id="monthExpenses">$0.00</div>
+                        <div class="text-3xl font-bold text-red-500" id="monthExpenses">$0.00</div>
                         <div class="text-xs text-gray-400 mt-1">↘️ Este mes</div>
                     </div>
                 </div>
@@ -237,7 +299,7 @@
                 <div class="mb-6">
                     <div class="flex justify-between items-center mb-4">
                         <h2 class="text-xl font-bold">Tus Cuentas</h2>
-                        <button onclick="navigateTo('gestion')" class="text-purple-600 text-sm hover:underline">Ver todas</button>
+                        <button onclick="navigateTo('gestion')" class="text-blue-800 text-sm hover:underline">Ver todas</button>
                     </div>
                     <div id="accountsCarousel" class="flex overflow-x-auto hide-scrollbar space-x-4 pb-2">
                         <div class="text-gray-400 text-sm">Carga tus cuentas...</div>
@@ -248,7 +310,7 @@
                 <div class="mb-6">
                     <div class="flex justify-between items-center mb-4">
                         <h2 class="text-xl font-bold">Transacciones Recientes</h2>
-                        <button onclick="navigateTo('transacciones')" class="text-purple-600 text-sm hover:underline">Ver todas</button>
+                        <button onclick="navigateTo('transacciones')" class="text-blue-800 text-sm hover:underline">Ver todas</button>
                     </div>
                     <div class="bg-white rounded-lg shadow">
                         <div id="recentTransactions" class="divide-y">
@@ -266,12 +328,12 @@
                 </div>
                 
                 <!-- Zenko Tip -->
-                <div id="zenkoTip" class="bg-purple-50 border-l-4 border-purple-500 p-4 rounded">
+                <div id="zenkoTip" class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
                     <div class="flex items-start">
                         <span class="text-2xl mr-3">💡</span>
                         <div>
-                            <h3 class="font-semibold text-purple-900 mb-1">Zenko Tip</h3>
-                            <p class="text-purple-700 text-sm" id="zenkoTipText">¡Empieza registrando tus transacciones diarias para tener una visión clara de tu flujo de efectivo!</p>
+                            <h3 class="font-semibold text-gray-800 mb-1">Zenko Tip</h3>
+                            <p class="text-blue-900 text-sm" id="zenkoTipText">¡Empieza registrando tus transacciones diarias para tener una visión clara de tu flujo de efectivo!</p>
                         </div>
                     </div>
                 </div>
@@ -338,7 +400,7 @@
                             </select>
                         </div>
                     </div>
-                    <button onclick="applyTransactionFilters()" class="mt-4 bg-purple-600 text-white px-6 py-2 rounded-lg text-sm hover:bg-purple-700">
+                    <button onclick="applyTransactionFilters()" class="mt-4 bg-blue-800 text-white px-6 py-2 rounded-lg text-sm hover:bg-blue-900">
                         Aplicar Filtros
                     </button>
                 </div>
@@ -368,7 +430,7 @@
                     <div class="bg-white rounded-lg shadow p-6">
                         <div class="flex justify-between items-center mb-4">
                             <h2 class="text-xl font-bold">Presupuestos</h2>
-                            <button onclick="openBudgetModal()" class="text-purple-600 text-sm hover:underline">Editar</button>
+                            <button onclick="openBudgetModal()" class="text-blue-800 text-sm hover:underline">Editar</button>
                         </div>
                         <div id="budgetsList" class="space-y-4">
                             <div class="text-gray-400 text-sm">Configura tus presupuestos...</div>
@@ -408,7 +470,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                         <div>
                             <div class="text-sm text-gray-500">Valor Total</div>
-                            <div class="text-2xl font-bold text-purple-600" id="portfolioValue">$0.00</div>
+                            <div class="text-2xl font-bold text-blue-800" id="portfolioValue">$0.00</div>
                         </div>
                         <div>
                             <div class="text-sm text-gray-500">Inversión Inicial</div>
@@ -439,7 +501,7 @@
                 
                 <div class="mb-4">
                     <div class="text-sm text-gray-500">Gasto Mensual Total</div>
-                    <div class="text-3xl font-bold text-purple-600" id="totalSubscriptions">$0.00</div>
+                    <div class="text-3xl font-bold text-blue-800" id="totalSubscriptions">$0.00</div>
                 </div>
                 
                 <div id="subscriptionsList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -485,7 +547,7 @@
                             Copia y pega el texto de tu estado de cuenta bancario o CSV. El motor Zenko analizará y categorizará automáticamente tus transacciones.
                         </p>
                         <textarea id="importText" rows="10" 
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                             placeholder="Ejemplo:&#10;15/01/2024 Walmart -450.00&#10;16/01/2024 Deposito Nomina 8500.00&#10;17/01/2024 Netflix -199.00"></textarea>
                     </div>
                     
@@ -509,7 +571,7 @@
                 <!-- Sub-tabs -->
                 <div class="bg-white rounded-lg shadow mb-6">
                     <div class="flex border-b">
-                        <button onclick="showManagementTab('bancos')" data-tab="bancos" class="management-tab flex-1 py-3 text-center border-b-2 border-purple-600 text-purple-600 font-medium">
+                        <button onclick="showManagementTab('bancos')" data-tab="bancos" class="management-tab flex-1 py-3 text-center border-b-2 border-blue-800 text-blue-800 font-medium">
                             🏦 Bancos
                         </button>
                         <button onclick="showManagementTab('cuentas')" data-tab="cuentas" class="management-tab flex-1 py-3 text-center text-gray-500">
@@ -525,7 +587,7 @@
                 <div id="bancosTab" class="management-content">
                     <div class="flex justify-between items-center mb-4">
                         <h2 class="text-xl font-bold">Bancos</h2>
-                        <button onclick="openBankModal()" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700">
+                        <button onclick="openBankModal()" class="bg-blue-800 text-white px-4 py-2 rounded-lg hover:bg-blue-900">
                             ➕ Nuevo Banco
                         </button>
                     </div>
@@ -540,7 +602,7 @@
                 <div id="cuentasTab" class="management-content hidden">
                     <div class="flex justify-between items-center mb-4">
                         <h2 class="text-xl font-bold">Cuentas</h2>
-                        <button onclick="openAccountModal()" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700">
+                        <button onclick="openAccountModal()" class="bg-blue-800 text-white px-4 py-2 rounded-lg hover:bg-blue-900">
                             ➕ Nueva Cuenta
                         </button>
                     </div>
@@ -555,14 +617,14 @@
                 <div id="categoriasTab" class="management-content hidden">
                     <div class="flex justify-between items-center mb-4">
                         <h2 class="text-xl font-bold">Categorías</h2>
-                        <button onclick="openCategoryModal()" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700">
+                        <button onclick="openCategoryModal()" class="bg-blue-800 text-white px-4 py-2 rounded-lg hover:bg-blue-900">
                             ➕ Nueva Categoría
                         </button>
                     </div>
                     
                     <div class="mb-4">
                         <div class="flex space-x-2">
-                            <button onclick="filterCategories('all')" class="category-filter-btn px-4 py-2 rounded bg-purple-600 text-white">
+                            <button onclick="filterCategories('all')" class="category-filter-btn px-4 py-2 rounded bg-blue-800 text-white">
                                 Todas
                             </button>
                             <button onclick="filterCategories('ingreso')" class="category-filter-btn px-4 py-2 rounded bg-gray-200">
@@ -695,7 +757,7 @@
                 <div>
                     <div class="flex justify-between items-center mb-1">
                         <label class="block text-sm font-medium text-gray-700">Categoría *</label>
-                        <button type="button" onclick="openNestedCategoryModal()" class="text-purple-600 text-xs hover:underline">+ Nueva categoría</button>
+                        <button type="button" onclick="openNestedCategoryModal()" class="text-blue-800 text-xs hover:underline">+ Nueva categoría</button>
                     </div>
                     <select id="transactionCategory" required class="w-full px-4 py-2 border rounded-lg">
                         <option value="">Selecciona categoría</option>
@@ -724,7 +786,7 @@
                 </div>
                 
                 <div class="flex justify-end space-x-3 pt-4">
-                    <button type="button" onclick="closeTransactionModal()" class="px-6 py-2 border rounded-lg hover:bg-gray-50">
+                    <button type="button" onclick="closeTransactionModal()" class="px-6 py-2 border rounded-lg hover:bg-gray-100">
                         Cancelar
                     </button>
                     <button type="submit" class="kitsune-gradient text-white px-6 py-2 rounded-lg font-semibold hover:opacity-90">
@@ -761,10 +823,10 @@
                 </div>
                 
                 <div class="flex justify-end space-x-3 pt-4">
-                    <button type="button" onclick="closeBankModal()" class="px-6 py-2 border rounded-lg hover:bg-gray-50">
+                    <button type="button" onclick="closeBankModal()" class="px-6 py-2 border rounded-lg hover:bg-gray-100">
                         Cancelar
                     </button>
-                    <button type="submit" class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700">
+                    <button type="submit" class="bg-blue-800 text-white px-6 py-2 rounded-lg hover:bg-blue-900">
                         Guardar
                     </button>
                 </div>
@@ -785,7 +847,7 @@
                 <div>
                     <div class="flex justify-between items-center mb-1">
                         <label class="block text-sm font-medium text-gray-700">Banco *</label>
-                        <button type="button" onclick="openNestedBankModal()" class="text-purple-600 text-xs hover:underline">+ Nuevo banco</button>
+                        <button type="button" onclick="openNestedBankModal()" class="text-blue-800 text-xs hover:underline">+ Nuevo banco</button>
                     </div>
                     <select id="accountBank" required class="w-full px-4 py-2 border rounded-lg">
                         <option value="">Selecciona banco</option>
@@ -820,10 +882,10 @@
                 </div>
                 
                 <div class="flex justify-end space-x-3 pt-4">
-                    <button type="button" onclick="closeAccountModal()" class="px-6 py-2 border rounded-lg hover:bg-gray-50">
+                    <button type="button" onclick="closeAccountModal()" class="px-6 py-2 border rounded-lg hover:bg-gray-100">
                         Cancelar
                     </button>
-                    <button type="submit" class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700">
+                    <button type="submit" class="bg-blue-800 text-white px-6 py-2 rounded-lg hover:bg-blue-900">
                         Guardar
                     </button>
                 </div>
@@ -862,10 +924,10 @@
                 </div>
                 
                 <div class="flex justify-end space-x-3 pt-4">
-                    <button type="button" onclick="closeCategoryModal()" class="px-6 py-2 border rounded-lg hover:bg-gray-50">
+                    <button type="button" onclick="closeCategoryModal()" class="px-6 py-2 border rounded-lg hover:bg-gray-100">
                         Cancelar
                     </button>
-                    <button type="submit" class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700">
+                    <button type="submit" class="bg-blue-800 text-white px-6 py-2 rounded-lg hover:bg-blue-900">
                         Guardar
                     </button>
                 </div>
@@ -886,10 +948,10 @@
                 </div>
                 
                 <div class="flex justify-end space-x-3 pt-4 mt-6 border-t">
-                    <button type="button" onclick="closeBudgetModal()" class="px-6 py-2 border rounded-lg hover:bg-gray-50">
+                    <button type="button" onclick="closeBudgetModal()" class="px-6 py-2 border rounded-lg hover:bg-gray-100">
                         Cancelar
                     </button>
-                    <button type="submit" class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700">
+                    <button type="submit" class="bg-blue-800 text-white px-6 py-2 rounded-lg hover:bg-blue-900">
                         Guardar Todo
                     </button>
                 </div>
@@ -931,10 +993,10 @@
                 </div>
                 
                 <div class="flex justify-end space-x-3 pt-4">
-                    <button type="button" onclick="closeGoalModal()" class="px-6 py-2 border rounded-lg hover:bg-gray-50">
+                    <button type="button" onclick="closeGoalModal()" class="px-6 py-2 border rounded-lg hover:bg-gray-100">
                         Cancelar
                     </button>
-                    <button type="submit" class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700">
+                    <button type="submit" class="bg-blue-800 text-white px-6 py-2 rounded-lg hover:bg-blue-900">
                         Guardar
                     </button>
                 </div>
@@ -979,16 +1041,16 @@
                     </div>
                 </div>
                 
-                <div class="bg-gray-50 p-3 rounded">
+                <div class="bg-gray-100 p-3 rounded">
                     <div class="text-sm text-gray-600">Inversión Total:</div>
                     <div class="text-lg font-bold" id="investmentTotal">$0.00</div>
                 </div>
                 
                 <div class="flex justify-end space-x-3 pt-4">
-                    <button type="button" onclick="closeInvestmentModal()" class="px-6 py-2 border rounded-lg hover:bg-gray-50">
+                    <button type="button" onclick="closeInvestmentModal()" class="px-6 py-2 border rounded-lg hover:bg-gray-100">
                         Cancelar
                     </button>
-                    <button type="submit" class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700">
+                    <button type="submit" class="bg-blue-800 text-white px-6 py-2 rounded-lg hover:bg-blue-900">
                         Guardar
                     </button>
                 </div>
@@ -1027,10 +1089,10 @@
                 </div>
                 
                 <div class="flex justify-end space-x-3 pt-4">
-                    <button type="button" onclick="closeSubscriptionModal()" class="px-6 py-2 border rounded-lg hover:bg-gray-50">
+                    <button type="button" onclick="closeSubscriptionModal()" class="px-6 py-2 border rounded-lg hover:bg-gray-100">
                         Cancelar
                     </button>
-                    <button type="submit" class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700">
+                    <button type="submit" class="bg-blue-800 text-white px-6 py-2 rounded-lg hover:bg-blue-900">
                         Guardar
                     </button>
                 </div>
@@ -1057,7 +1119,7 @@
                 </div>
                 
                 <div class="flex justify-end space-x-3 pt-4 border-t">
-                    <button onclick="closeImportReviewModal()" class="px-6 py-2 border rounded-lg hover:bg-gray-50">
+                    <button onclick="closeImportReviewModal()" class="px-6 py-2 border rounded-lg hover:bg-gray-100">
                         Cancelar
                     </button>
                     <button onclick="confirmImport()" class="kitsune-gradient text-white px-6 py-2 rounded-lg font-semibold hover:opacity-90">
@@ -1177,7 +1239,7 @@
             }
             
             container.innerHTML = state.banks.map(bank => `
-                <div class="p-4 flex justify-between items-center hover:bg-gray-50">
+                <div class="p-4 flex justify-between items-center hover:bg-gray-100">
                     <div>
                         <div class="font-medium">🏦 ${bank.nombre}</div>
                         <div class="text-sm text-gray-500">${bank.tipo}</div>
@@ -1186,7 +1248,7 @@
                         <button onclick='openBankModal(${JSON.stringify(bank).replace(/'/g, "\'")})'
                             class="text-blue-600 text-sm hover:underline">Editar</button>
                         <button onclick="deleteBank('${bank.id}')"
-                            class="text-red-600 text-sm hover:underline">Eliminar</button>
+                            class="text-red-500 text-sm hover:underline">Eliminar</button>
                     </div>
                 </div>
             `).join('');
@@ -1288,7 +1350,7 @@
                 const bank = state.banks.find(b => b.id === account.bankId);
                 
                 return `
-                    <div class="p-4 flex justify-between items-center hover:bg-gray-50">
+                    <div class="p-4 flex justify-between items-center hover:bg-gray-100">
                         <div>
                             <div class="font-medium">💳 ${account.nombre}</div>
                             <div class="text-sm text-gray-500">
@@ -1297,12 +1359,12 @@
                             </div>
                         </div>
                         <div class="text-right">
-                            <div class="font-bold text-purple-600">${formatMoney(account.saldo)} ${account.moneda}</div>
+                            <div class="font-bold text-blue-800">${formatMoney(account.saldo)} ${account.moneda}</div>
                             <div class="flex space-x-2 mt-1">
                                 <button onclick='openAccountModal(${JSON.stringify(account).replace(/'/g, "\'")})'
                                     class="text-blue-600 text-xs hover:underline">Editar</button>
                                 <button onclick="deleteAccount('${account.id}')"
-                                    class="text-red-600 text-xs hover:underline">Eliminar</button>
+                                    class="text-red-500 text-xs hover:underline">Eliminar</button>
                             </div>
                         </div>
                     </div>
@@ -1406,11 +1468,11 @@
             
             // Update button styles
             document.querySelectorAll('.category-filter-btn').forEach(btn => {
-                btn.classList.remove('bg-purple-600', 'text-white');
+                btn.classList.remove('bg-blue-800', 'text-white');
                 btn.classList.add('bg-gray-200');
             });
             event.target.classList.remove('bg-gray-200');
-            event.target.classList.add('bg-purple-600', 'text-white');
+            event.target.classList.add('bg-blue-800', 'text-white');
         }
         
         function renderCategoriesList() {
@@ -1427,7 +1489,7 @@
             }
             
             container.innerHTML = filtered.map(category => `
-                <div class="p-4 flex justify-between items-center hover:bg-gray-50">
+                <div class="p-4 flex justify-between items-center hover:bg-gray-100">
                     <div class="flex items-center space-x-3">
                         <span class="text-2xl">${category.icono}</span>
                         <div>
@@ -1439,7 +1501,7 @@
                         <button onclick='openCategoryModal(${JSON.stringify(category).replace(/'/g, "\'")})'
                             class="text-blue-600 text-sm hover:underline">Editar</button>
                         <button onclick="deleteCategory('${category.id}')"
-                            class="text-red-600 text-sm hover:underline">Eliminar</button>
+                            class="text-red-500 text-sm hover:underline">Eliminar</button>
                     </div>
                 </div>
             `).join('');
@@ -1541,7 +1603,7 @@
                 });
                 
                 const percentage = budget > 0 ? Math.min((spent / budget) * 100, 100) : 0;
-                const color = percentage > 90 ? 'bg-red-500' : percentage > 70 ? 'bg-yellow-500' : 'bg-green-500';
+                const color = percentage > 90 ? 'bg-red-500' : percentage > 70 ? 'bg-yellow-400' : 'bg-green-500';
                 
                 return `
                     <div class="space-y-2">
@@ -1656,7 +1718,7 @@
                             <div class="w-full bg-gray-200 rounded-full h-3">
                                 <div class="kitsune-gradient h-3 rounded-full progress-bar" style="width: ${percentage}%"></div>
                             </div>
-                            <div class="text-center text-sm font-medium ${isComplete ? 'text-green-600' : 'text-purple-600'}">
+                            <div class="text-center text-sm font-medium ${isComplete ? 'text-green-500' : 'text-blue-800'}">
                                 ${isComplete ? '🎉 ¡Meta Completada!' : percentage.toFixed(1) + '%'}
                             </div>
                         </div>
@@ -1666,7 +1728,7 @@
                                 class="text-blue-600 text-sm hover:underline">Editar</button>
                             <span class="text-gray-300">|</span>
                             <button onclick="deleteGoal('${goal.id}')"
-                                class="text-red-600 text-sm hover:underline">Eliminar</button>
+                                class="text-red-500 text-sm hover:underline">Eliminar</button>
                         </div>
                     </div>
                 `;
@@ -1805,7 +1867,7 @@
                                 <span class="text-gray-600">Precio:</span>
                                 <span class="font-medium">${formatMoney(inv.precio)}</span>
                             </div>
-                            <div class="flex justify-between font-bold text-purple-600">
+                            <div class="flex justify-between font-bold text-blue-800">
                                 <span>Valor Total:</span>
                                 <span>${formatMoney(totalValue)}</span>
                             </div>
@@ -1816,7 +1878,7 @@
                                 class="text-blue-600 text-sm hover:underline">Editar</button>
                             <span class="text-gray-300">|</span>
                             <button onclick="deleteInvestment('${inv.id}')"
-                                class="text-red-600 text-sm hover:underline">Eliminar</button>
+                                class="text-red-500 text-sm hover:underline">Eliminar</button>
                         </div>
                     </div>
                 `;
@@ -1852,7 +1914,7 @@
             
             const returnElement = document.getElementById('portfolioReturn');
             returnElement.textContent = returnPercentage.toFixed(2) + '%';
-            returnElement.className = returnPercentage >= 0 ? 'text-2xl font-bold text-green-600' : 'text-2xl font-bold text-red-600';
+            returnElement.className = returnPercentage >= 0 ? 'text-2xl font-bold text-green-500' : 'text-2xl font-bold text-red-500';
         }
         
         // ==================== Subscriptions ====================
@@ -1936,7 +1998,7 @@
                         </div>
                         
                         <div class="text-center mb-4">
-                            <div class="text-2xl font-bold text-purple-600">${formatMoney(sub.monto)}</div>
+                            <div class="text-2xl font-bold text-blue-800">${formatMoney(sub.monto)}</div>
                             <div class="text-sm text-gray-500">por mes</div>
                         </div>
                         
@@ -1951,7 +2013,7 @@
                                 class="text-blue-600 text-sm hover:underline">Editar</button>
                             <span class="text-gray-300">|</span>
                             <button onclick="deleteSubscription('${sub.id}')"
-                                class="text-red-600 text-sm hover:underline">Eliminar</button>
+                                class="text-red-500 text-sm hover:underline">Eliminar</button>
                         </div>
                     </div>
                 `;
@@ -2088,7 +2150,7 @@
                 const category = state.categories.find(c => c.nombre === tx.categoria && c.tipo === tx.tipo);
                 
                 return `
-                    <div class="bg-gray-50 p-3 rounded flex justify-between items-center">
+                    <div class="bg-gray-100 p-3 rounded flex justify-between items-center">
                         <div class="flex items-center space-x-3">
                             <span class="text-xl">${category ? category.icono : (tx.tipo === 'ingreso' ? '💰' : '💸')}</span>
                             <div>
@@ -2097,7 +2159,7 @@
                             </div>
                         </div>
                         <div class="text-right">
-                            <div class="font-bold ${tx.tipo === 'ingreso' ? 'text-green-600' : 'text-red-600'}">
+                            <div class="font-bold ${tx.tipo === 'ingreso' ? 'text-green-500' : 'text-red-500'}">
                                 ${tx.tipo === 'ingreso' ? '+' : '-'}${formatMoney(tx.monto)}
                             </div>
                         </div>
@@ -2274,13 +2336,13 @@
                 const unlocked = state.userProfile.logros[ach.key];
                 
                 return `
-                    <div class="flex items-center space-x-3 p-3 rounded ${unlocked ? 'bg-purple-50' : 'bg-gray-100'}">
+                    <div class="flex items-center space-x-3 p-3 rounded ${unlocked ? 'bg-blue-50' : 'bg-gray-100'}">
                         <div class="text-3xl ${unlocked ? '' : 'grayscale opacity-50'}">${ach.icon}</div>
                         <div class="flex-1">
-                            <div class="font-medium ${unlocked ? 'text-purple-900' : 'text-gray-600'}">${ach.name}</div>
-                            <div class="text-sm ${unlocked ? 'text-purple-600' : 'text-gray-500'}">${ach.description}</div>
+                            <div class="font-medium ${unlocked ? 'text-gray-800' : 'text-gray-600'}">${ach.name}</div>
+                            <div class="text-sm ${unlocked ? 'text-blue-800' : 'text-gray-500'}">${ach.description}</div>
                         </div>
-                        ${unlocked ? '<div class="text-purple-600 font-bold">✓</div>' : ''}
+                        ${unlocked ? '<div class="text-blue-800 font-bold">✓</div>' : ''}
                     </div>
                 `;
             }).join('');

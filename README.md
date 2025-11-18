@@ -55,10 +55,16 @@ Zenko Financial es una aplicación web moderna de gestión financiera personal q
 
 ### 🎨 Diseño y UX
 - **Responsive**: Optimizado para móvil, tablet y desktop
-- **Tema Zenko**: Gradientes morados y rosas personalizados
-- **Animaciones Suaves**: Transiciones fluidas entre estados
+- **Material 3 Expressive**: Diseño moderno basado en Material Design 3
+- **Paleta Estratégica**: 
+  - 🔵 Azul Zafiro (#1E3A8A) - Color primario para confianza y estabilidad
+  - 🔲 Gris Grafito (#2D3748) - Texto y elementos de interfaz
+  - 🟢 Verde Azulado (#48BB78) - Ingresos y éxito
+  - 🔴 Rojo Peligro (#E53E3E) - Gastos y alertas
+  - 💙 Azul Claro (#63B3ED) - Información y estados hover
+- **Animaciones Suaves**: Transiciones fluidas con cubic-bezier optimizado
 - **Iconografía Emoji**: Interfaz visual amigable
-- **Dark Mode Ready**: Preparado para tema oscuro (futuro)
+- **Light/Dark Mode**: Soporte para modo claro (#F7FAFC) y oscuro (#121212)
 
 ---
 
