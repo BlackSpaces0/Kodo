@@ -1,6 +1,21 @@
-# Kodo - Zenko Financial
+# Kodo - Zenko Financial 🦊💰
 
-Aplicación web moderna construida con Vite + Firebase para gestión financiera.
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen)](https://nodejs.org/)
+[![Vite](https://img.shields.io/badge/vite-6.0-646CFF?logo=vite)](https://vitejs.dev/)
+[![Firebase](https://img.shields.io/badge/firebase-12.6-orange?logo=firebase)](https://firebase.google.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+
+Aplicación web moderna construida con Vite + Firebase para gestión financiera con claridad estratégica.
+
+## ✨ Características
+
+- 🔐 **Autenticación Firebase** - Login con Google y Email/Password
+- 🔥 **Firestore Database** - Base de datos en tiempo real
+- ⚡ **Vite Build System** - Development rápido con HMR
+- 🔒 **Variables de entorno seguras** - Configuración con `.env.local`
+- 🚀 **CI/CD GitHub Actions** - Despliegue automático a Firebase Hosting
+- 🛡️ **Snyk Security** - 0 vulnerabilidades detectadas
+- 📱 **Responsive Design** - Funciona en todos los dispositivos
 
 ## 📋 Requisitos previos
 
