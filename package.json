@@ -1,20 +1,22 @@
 {
-  "name": "kodo-zenko-financial",
-  "version": "1.0.0",
-  "description": "Zenko Financial - Gestión financiera personal con claridad estratégica",
+  "name": "kodo-zenko",
+  "version": "0.1.0",
+  "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint": "echo 'No linter configured yet'"
   },
-  "keywords": ["finance", "vite", "firebase"],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "firebase": "^11.1.0"
+    "firebase": "^12.6.0"
   },
   "devDependencies": {
-    "vite": "^6.0.1"
+    "vite": "^6.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
   }
 }
