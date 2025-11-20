@@ -12,9 +12,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "firebase": "^10.7.1"
+    "firebase": "^11.1.0"
   },
   "devDependencies": {
-    "vite": "^5.0.8"
+    "vite": "^6.0.1"
   }
 }
