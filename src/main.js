@@ -20,9 +20,11 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 
-// Log initialization status
-console.log('🦊 Zenko Financial - Firebase initialized successfully');
-console.log('Environment:', import.meta.env.MODE);
+// Log initialization status (development only)
+if (import.meta.env.DEV) {
+  console.log('🦊 Zenko Financial - Firebase initialized successfully');
+  console.log('Environment:', import.meta.env.MODE);
+}
 
 // Simple UI to confirm app is running
 document.getElementById('app').innerHTML = `
