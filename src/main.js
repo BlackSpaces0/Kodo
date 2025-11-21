@@ -27,12 +27,17 @@ const firebaseConfig = {
 if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
   console.error('⚠️ Firebase config missing! Please create .env.local with your Firebase credentials.');
   console.error('See .env.example for the required variables.');
+} else {
+  console.log('✅ Firebase config loaded successfully');
+  console.log('📦 Project ID:', firebaseConfig.projectId);
 }
 
 // Inicializa Firebase
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+
+console.log('🔥 Firebase initialized for Zenko Financial');
 
 // ========== UI BÁSICA DE AUTENTICACIÓN ==========
 
@@ -201,8 +206,13 @@ onAuthStateChanged(auth, user => {
 });
 
 // Inicializa la UI cuando el DOM esté listo
+console.log('🎨 Initializing Zenko Financial UI...');
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initUI);
+  document.addEventListener('DOMContentLoaded', () => {
+    console.log('📄 DOM loaded, mounting UI');
+    initUI();
+  });
 } else {
+  console.log('📄 DOM already loaded, mounting UI');
   initUI();
 }
