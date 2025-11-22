@@ -8,9 +8,10 @@ import {
   createUserWithEmailAndPassword,
   signOut,
   GoogleAuthProvider,
-  signInWithPopup
+  signInWithPopup,
+  updateProfile
 } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore, doc, setDoc } from "firebase/firestore";
 import { renderDashboard } from "./dashboard-new.js";
 
 // Carga la config desde variables de entorno (Vite expone VITE_*)
@@ -83,6 +84,29 @@ function initUI() {
 
           <!-- Login con Email/Password -->
           <div class="space-y-4">
+            <!-- Signup-only fields -->
+            <div id="signup-fields" class="hidden space-y-4">
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Nombre completo</label>
+                <input type="text" id="fullname-input" placeholder="Juan Pérez" 
+                       class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-primary focus:outline-none transition-colors">
+              </div>
+              
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Nombre de usuario</label>
+                <input type="text" id="username-input" placeholder="juanperez" 
+                       class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-primary focus:outline-none transition-colors">
+                <p class="text-xs text-gray-500 mt-1">Solo letras, números y guiones bajos</p>
+              </div>
+              
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Edad</label>
+                <input type="number" id="age-input" placeholder="18" min="13" max="120"
+                       class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-primary focus:outline-none transition-colors">
+                <p class="text-xs text-gray-500 mt-1">Debes ser mayor de 13 años</p>
+              </div>
+            </div>
+
             <div>
               <label class="block text-sm font-semibold text-gray-700 mb-2">Email</label>
               <input type="email" id="email-input" placeholder="tu@email.com" 
@@ -92,6 +116,20 @@ function initUI() {
             <div>
               <label class="block text-sm font-semibold text-gray-700 mb-2">Contraseña</label>
               <input type="password" id="password-input" placeholder="••••••••" 
+                     class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-primary focus:outline-none transition-colors">
+              <div id="password-requirements" class="hidden mt-2 space-y-1 text-xs">
+                <p id="req-length" class="text-gray-500">• Mínimo 8 caracteres</p>
+                <p id="req-uppercase" class="text-gray-500">• Una letra mayúscula</p>
+                <p id="req-lowercase" class="text-gray-500">• Una letra minúscula</p>
+                <p id="req-number" class="text-gray-500">• Un número</p>
+                <p id="req-special" class="text-gray-500">• Un carácter especial (!@#$%^&*)</p>
+              </div>
+            </div>
+
+            <!-- Confirm Password (signup only) -->
+            <div id="confirm-password-container" class="hidden">
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Confirmar contraseña</label>
+              <input type="password" id="confirm-password-input" placeholder="••••••••" 
                      class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-primary focus:outline-none transition-colors">
             </div>
 
@@ -132,17 +170,50 @@ function initUI() {
   document.getElementById('login-btn').addEventListener('click', handleEmailLogin);
   document.getElementById('signup-btn').addEventListener('click', handleEmailSignup);
   
-  // Show/hide terms checkbox based on button focus
+  // Show/hide signup fields and terms
   const signupBtn = document.getElementById('signup-btn');
   const loginBtn = document.getElementById('login-btn');
+  const signupFields = document.getElementById('signup-fields');
   const termsContainer = document.getElementById('terms-container');
+  const confirmPasswordContainer = document.getElementById('confirm-password-container');
+  const passwordRequirements = document.getElementById('password-requirements');
+  const passwordInput = document.getElementById('password-input');
   
-  signupBtn.addEventListener('mouseenter', () => {
-    termsContainer.classList.remove('hidden');
+  let isSignupMode = false;
+  
+  signupBtn.addEventListener('click', (e) => {
+    if (!isSignupMode) {
+      e.preventDefault();
+      isSignupMode = true;
+      signupFields.classList.remove('hidden');
+      termsContainer.classList.remove('hidden');
+      confirmPasswordContainer.classList.remove('hidden');
+      passwordRequirements.classList.remove('hidden');
+      signupBtn.textContent = 'Registrarse';
+      loginBtn.textContent = 'Ya tengo cuenta';
+      return;
+    }
+    // If already in signup mode, proceed with handleEmailSignup
   });
   
-  loginBtn.addEventListener('click', () => {
-    termsContainer.classList.add('hidden');
+  loginBtn.addEventListener('click', (e) => {
+    if (isSignupMode) {
+      e.preventDefault();
+      isSignupMode = false;
+      signupFields.classList.add('hidden');
+      termsContainer.classList.add('hidden');
+      confirmPasswordContainer.classList.add('hidden');
+      passwordRequirements.classList.add('hidden');
+      signupBtn.textContent = 'Crear Cuenta';
+      loginBtn.textContent = 'Iniciar Sesión';
+      return;
+    }
+    // If in login mode, proceed with handleEmailLogin
+  });
+
+  // Real-time password validation
+  passwordInput.addEventListener('input', () => {
+    validatePasswordRequirements(passwordInput.value);
   });
 }
 
@@ -175,20 +246,53 @@ async function handleEmailLogin() {
 }
 
 async function handleEmailSignup() {
-  const email = document.getElementById('email-input').value;
+  const fullname = document.getElementById('fullname-input').value.trim();
+  const username = document.getElementById('username-input').value.trim();
+  const age = parseInt(document.getElementById('age-input').value);
+  const email = document.getElementById('email-input').value.trim();
   const password = document.getElementById('password-input').value;
+  const confirmPassword = document.getElementById('confirm-password-input').value;
   const termsCheckbox = document.getElementById('terms-checkbox');
   
-  if (!email || !password) {
+  // Validate all fields
+  if (!fullname || !username || !age || !email || !password || !confirmPassword) {
     showError('Por favor completa todos los campos');
     return;
   }
 
-  if (password.length < 6) {
-    showError('La contraseña debe tener al menos 6 caracteres');
+  // Validate fullname
+  if (fullname.length < 3) {
+    showError('El nombre completo debe tener al menos 3 caracteres');
     return;
   }
 
+  // Validate username (only alphanumeric and underscore)
+  const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
+  if (!usernameRegex.test(username)) {
+    showError('El nombre de usuario debe tener entre 3-20 caracteres (solo letras, números y guiones bajos)');
+    return;
+  }
+
+  // Validate age
+  if (age < 13 || age > 120 || isNaN(age)) {
+    showError('Debes tener al menos 13 años para crear una cuenta');
+    return;
+  }
+
+  // Validate password requirements
+  const passwordValidation = validatePassword(password);
+  if (!passwordValidation.valid) {
+    showError(passwordValidation.message);
+    return;
+  }
+
+  // Confirm password match
+  if (password !== confirmPassword) {
+    showError('Las contraseñas no coinciden');
+    return;
+  }
+
+  // Check terms acceptance
   if (!termsCheckbox.checked) {
     showError('Debes aceptar los Términos de Servicio y la Política de Privacidad para crear una cuenta');
     return;
@@ -196,11 +300,35 @@ async function handleEmailSignup() {
 
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+
+    // Update user profile with display name
+    await updateProfile(user, {
+      displayName: fullname
+    });
+
+    // Save additional user data to Firestore
+    await setDoc(doc(db, 'users', user.uid), {
+      fullname: fullname,
+      username: username,
+      age: age,
+      email: email,
+      createdAt: new Date().toISOString(),
+      photoURL: user.photoURL || ''
+    });
+
     // Mark user as new for welcome modal
-    localStorage.setItem(`newUser_${userCredential.user.uid}`, 'true');
+    localStorage.setItem(`newUser_${user.uid}`, 'true');
     showError('');
+    console.log('✅ Usuario registrado exitosamente');
   } catch (error) {
-    showError(`Error registro: ${error.message}`);
+    if (error.code === 'auth/email-already-in-use') {
+      showError('Este email ya está registrado. Intenta iniciar sesión.');
+    } else if (error.code === 'auth/invalid-email') {
+      showError('Email inválido');
+    } else {
+      showError(`Error registro: ${error.message}`);
+    }
   }
 }
 
@@ -213,13 +341,67 @@ async function handleLogout() {
   }
 }
 
+// Password validation function
+function validatePassword(password) {
+  const requirements = {
+    length: password.length >= 8,
+    uppercase: /[A-Z]/.test(password),
+    lowercase: /[a-z]/.test(password),
+    number: /[0-9]/.test(password),
+    special: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)
+  };
+
+  const allValid = Object.values(requirements).every(v => v);
+
+  let message = 'La contraseña debe contener: ';
+  const missing = [];
+  if (!requirements.length) missing.push('mínimo 8 caracteres');
+  if (!requirements.uppercase) missing.push('una mayúscula');
+  if (!requirements.lowercase) missing.push('una minúscula');
+  if (!requirements.number) missing.push('un número');
+  if (!requirements.special) missing.push('un carácter especial');
+
+  return {
+    valid: allValid,
+    message: missing.length > 0 ? message + missing.join(', ') : '',
+    requirements: requirements
+  };
+}
+
+// Real-time password requirements UI update
+function validatePasswordRequirements(password) {
+  const validation = validatePassword(password);
+  const reqs = validation.requirements;
+
+  updateRequirement('req-length', reqs.length);
+  updateRequirement('req-uppercase', reqs.uppercase);
+  updateRequirement('req-lowercase', reqs.lowercase);
+  updateRequirement('req-number', reqs.number);
+  updateRequirement('req-special', reqs.special);
+}
+
+function updateRequirement(id, isValid) {
+  const element = document.getElementById(id);
+  if (element) {
+    if (isValid) {
+      element.classList.remove('text-gray-500');
+      element.classList.add('text-green-600', 'font-semibold');
+      element.innerHTML = element.innerHTML.replace('•', '✓');
+    } else {
+      element.classList.remove('text-green-600', 'font-semibold');
+      element.classList.add('text-gray-500');
+      element.innerHTML = element.innerHTML.replace('✓', '•');
+    }
+  }
+}
+
 function showError(message) {
   const errorDiv = document.getElementById('error-message');
   if (message) {
     errorDiv.textContent = message;
-    errorDiv.style.display = 'block';
+    errorDiv.classList.remove('hidden');
   } else {
-    errorDiv.style.display = 'none';
+    errorDiv.classList.add('hidden');
   }
 }
 

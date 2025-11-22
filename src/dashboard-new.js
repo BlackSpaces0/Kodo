@@ -1,7 +1,7 @@
 // Professional Dashboard with Sidebar Navigation for Zenko Financial
 import { auth, db } from './main.js';
 import { signOut } from 'firebase/auth';
-import { collection, addDoc, query, getDocs, deleteDoc, doc, updateDoc, orderBy, where } from 'firebase/firestore';
+import { collection, addDoc, query, getDocs, deleteDoc, doc, updateDoc, orderBy, where, getDoc } from 'firebase/firestore';
 
 // Global state
 let currentPage = 'dashboard';
@@ -193,27 +193,24 @@ export async function renderDashboard(user) {
               <span class="text-xl">📈</span>
               <span class="font-medium">${t('reports')}</span>
             </a>
-            <a href="#profile" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/20 transition-all" data-page="profile">
-              <span class="text-xl">👤</span>
-              <span class="font-medium">${t('profile')}</span>
-            </a>
           </nav>
         </div>
 
-        <!-- User Section -->
+        <!-- User Section with Settings -->
         <div class="absolute bottom-0 w-64 p-6 border-t border-white/20">
-          <div class="flex items-center gap-3 mb-4">
-            <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-              <span class="text-xl">👤</span>
-            </div>
-            <div class="flex-1 min-w-0">
-              <p class="text-sm font-semibold truncate">${user.displayName || 'Usuario'}</p>
-              <p class="text-xs text-white/70 truncate">${user.email}</p>
-            </div>
+          <div class="space-y-3">
+            <!-- User Info Button -->
+            <button id="user-menu-btn" class="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-white/20 transition-all text-left">
+              <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
+                <span class="text-xl">👤</span>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-semibold truncate">${user.displayName || user.email?.split('@')[0] || 'Usuario'}</p>
+                <p class="text-xs text-white/70 truncate">${user.email}</p>
+              </div>
+              <span class="text-white/70">⚙️</span>
+            </button>
           </div>
-          <button id="logout-btn" class="w-full py-2 px-4 bg-white/20 hover:bg-white/30 rounded-lg text-sm font-semibold transition-all">
-            🚪 Cerrar Sesión
-          </button>
         </div>
       </aside>
 
@@ -226,11 +223,20 @@ export async function renderDashboard(user) {
               <h2 id="page-title" class="text-2xl font-display font-bold text-gray-800">Dashboard</h2>
               <p class="text-sm text-gray-600">Bienvenido de nuevo, ${user.displayName || 'Usuario'}</p>
             </div>
-            <div class="flex items-center gap-4">
+            <div class="flex items-center gap-3">
+              <!-- Profile Button -->
+              <button id="profile-btn" class="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 rounded-xl transition-all">
+                <span class="text-xl">👤</span>
+                <span class="text-sm font-semibold text-gray-700">Perfil</span>
+              </button>
+              
+              <!-- Notifications Button -->
               <button id="notifications-btn" class="p-2 hover:bg-gray-100 rounded-lg transition-all relative">
                 <span class="text-2xl">🔔</span>
-                <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                <span id="notification-badge" class="hidden absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
               </button>
+              
+              <!-- Settings Button -->
               <button id="settings-btn" class="p-2 hover:bg-gray-100 rounded-lg transition-all">
                 <span class="text-2xl">⚙️</span>
               </button>
@@ -268,6 +274,13 @@ export async function renderDashboard(user) {
   `;
 
   // Event listeners
+  
+  // Profile button in header
+  document.getElementById('profile-btn').addEventListener('click', () => {
+    navigateTo('profile');
+  });
+
+  // Logout button
   document.getElementById('logout-btn').addEventListener('click', async () => {
     try {
       await signOut(auth);
@@ -2110,12 +2123,18 @@ function exportReportToPDF() {
 // ========== PROFILE PAGE ==========
 async function renderProfilePage(container) {
   try {
+    if (!currentUser || !currentUser.uid) {
+      throw new Error('Usuario no autenticado');
+    }
+
     // Load user preferences from Firestore
     const userDocRef = doc(db, 'users', currentUser.uid);
-    const userDoc = await getDocs(query(collection(db, 'users')));
+    const userDocSnap = await getDoc(userDocRef);
     
     let userPreferences = {
-      displayName: currentUser.displayName || 'Usuario',
+      fullname: currentUser.displayName || 'Usuario',
+      username: '',
+      age: null,
       email: currentUser.email,
       photoURL: currentUser.photoURL || null,
       currency: 'DOP',
@@ -2123,6 +2142,11 @@ async function renderProfilePage(container) {
       notifications: true,
       theme: 'light'
     };
+
+    // Merge with Firestore data if exists
+    if (userDocSnap.exists()) {
+      userPreferences = { ...userPreferences, ...userDocSnap.data() };
+    }
 
     container.innerHTML = `
       <div class="max-w-4xl mx-auto space-y-6">
@@ -2140,12 +2164,14 @@ async function renderProfilePage(container) {
               </button>
             </div>
             <div class="flex-1 text-center md:text-left">
-              <h2 class="text-3xl font-display font-bold mb-2">${userPreferences.displayName}</h2>
-              <p class="text-white/90 mb-4">${userPreferences.email}</p>
+              <h2 class="text-3xl font-display font-bold mb-2">${userPreferences.fullname || userPreferences.displayName || 'Usuario'}</h2>
+              <p class="text-white/90 mb-1">${userPreferences.username ? '@' + userPreferences.username : ''}</p>
+              <p class="text-white/80 text-sm mb-4">${userPreferences.email}</p>
               <div class="flex flex-wrap gap-3 justify-center md:justify-start">
                 <span class="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-sm font-semibold">
                   📅 Miembro desde ${new Date(currentUser.metadata.creationTime).toLocaleDateString('es-DO', { month: 'long', year: 'numeric' })}
                 </span>
+                ${userPreferences.age ? `<span class="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-sm font-semibold">🎂 ${userPreferences.age} años</span>` : ''}
                 <span class="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-sm font-semibold">
                   ✨ Plan Gratuito
                 </span>
@@ -2162,12 +2188,27 @@ async function renderProfilePage(container) {
           </h3>
 
           <div class="space-y-6">
-            <!-- Display Name -->
+            <!-- Full Name -->
             <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2">Nombre para mostrar</label>
-              <input type="text" id="profile-name" value="${userPreferences.displayName}" 
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Nombre completo</label>
+              <input type="text" id="profile-fullname" value="${userPreferences.fullname || userPreferences.displayName || ''}" 
                      class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-primary focus:outline-none transition-colors">
-              <p class="text-xs text-gray-500 mt-1">Este nombre se mostrará en tu perfil y en la aplicación</p>
+              <p class="text-xs text-gray-500 mt-1">Tu nombre real</p>
+            </div>
+
+            <!-- Username -->
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Nombre de usuario</label>
+              <input type="text" id="profile-username" value="${userPreferences.username || ''}" 
+                     class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-primary focus:outline-none transition-colors">
+              <p class="text-xs text-gray-500 mt-1">@${userPreferences.username || 'tunombre'}</p>
+            </div>
+
+            <!-- Age -->
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">Edad</label>
+              <input type="number" id="profile-age" value="${userPreferences.age || ''}" min="13" max="120"
+                     class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-primary focus:outline-none transition-colors">
             </div>
 
             <!-- Email (read-only) -->
@@ -2369,6 +2410,11 @@ async function renderProfilePage(container) {
 
 async function loadProfileStatistics() {
   try {
+    if (!currentUser || !currentUser.uid) {
+      console.error('No user authenticated');
+      return;
+    }
+
     // Count transactions
     const transactionsRef = collection(db, 'users', currentUser.uid, 'transactions');
     const transactionsSnapshot = await getDocs(transactionsRef);
@@ -2455,42 +2501,56 @@ async function loadProfileStatistics() {
 
 async function saveProfileChanges() {
   try {
-    const displayName = document.getElementById('profile-name').value.trim();
+    const fullname = document.getElementById('profile-fullname').value.trim();
+    const username = document.getElementById('profile-username').value.trim();
+    const age = parseInt(document.getElementById('profile-age').value);
     const currency = document.getElementById('profile-currency').value;
     const language = document.getElementById('profile-language').value;
     const notifications = document.getElementById('profile-notifications').checked;
 
-    if (!displayName) {
-      alert('❌ El nombre no puede estar vacío');
+    // Validations
+    if (!fullname || fullname.length < 3) {
+      alert('❌ El nombre completo debe tener al menos 3 caracteres');
+      return;
+    }
+
+    if (username && !/^[a-zA-Z0-9_]{3,20}$/.test(username)) {
+      alert('❌ El nombre de usuario debe tener entre 3-20 caracteres (solo letras, números y guiones bajos)');
+      return;
+    }
+
+    if (age && (age < 13 || age > 120 || isNaN(age))) {
+      alert('❌ Edad inválida');
       return;
     }
 
     // Update Firebase Auth profile
     const { updateProfile } = await import('firebase/auth');
     await updateProfile(currentUser, {
-      displayName: displayName
+      displayName: fullname
     });
 
     // Save preferences to Firestore
     const userPrefsRef = doc(db, 'users', currentUser.uid);
-    await updateDoc(userPrefsRef, {
-      displayName: displayName,
+    const userData = {
+      fullname: fullname,
+      username: username,
+      age: age || null,
+      displayName: fullname,
+      email: currentUser.email,
       currency: currency,
       language: language,
       notifications: notifications,
-      updatedAt: new Date()
-    }).catch(async (error) => {
+      updatedAt: new Date().toISOString()
+    };
+
+    await updateDoc(userPrefsRef, userData).catch(async (error) => {
       // If document doesn't exist, create it
       if (error.code === 'not-found') {
         const { setDoc } = await import('firebase/firestore');
         await setDoc(userPrefsRef, {
-          displayName: displayName,
-          email: currentUser.email,
-          currency: currency,
-          language: language,
-          notifications: notifications,
-          createdAt: new Date(),
-          updatedAt: new Date()
+          ...userData,
+          createdAt: new Date().toISOString()
         });
       } else {
         throw error;
@@ -2501,7 +2561,7 @@ async function saveProfileChanges() {
     
     // Reload page to reflect changes
     setTimeout(() => {
-      window.location.reload();
+      navigateTo('profile');
     }, 1000);
 
   } catch (error) {
