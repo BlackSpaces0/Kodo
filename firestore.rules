@@ -1,0 +1,26 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Reglas para colección de usuarios
+    match /users/{userId} {
+      // Solo el usuario puede leer/escribir su propia data
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      
+      // Subcolecci���n de cuentas
+      match /accounts/{accountId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+      
+      // Subcolección de transacciones
+      match /transactions/{transactionId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+      
+      // Subcolección de presupuestos
+      match /budgets/{budgetId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+  }
+}

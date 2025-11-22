@@ -3,10 +3,168 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Zenko Financial</title>
+    <title>Zenko Financial - Claridad Estratégica</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js for visualizations -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind Configuration -->
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                DEFAULT: '#667eea',
+                dark: '#764ba2',
+                light: '#f0f4ff'
+              },
+              secondary: {
+                DEFAULT: '#f093fb',
+                light: '#fce7ff'
+              }
+            },
+            fontFamily: {
+              sans: ['Inter', 'system-ui', 'sans-serif'],
+              display: ['Poppins', 'system-ui', 'sans-serif']
+            }
+          }
+        }
+      }
+    </script>
+    
+    <!-- Custom Styles -->
+    <style>
+      :root {
+        --bg-primary: #ffffff;
+        --bg-secondary: #f9fafb;
+        --text-primary: #1f2937;
+        --text-secondary: #6b7280;
+        --border-color: #e5e7eb;
+      }
+
+      .dark-mode {
+        --bg-primary: #1f2937;
+        --bg-secondary: #111827;
+        --text-primary: #f9fafb;
+        --text-secondary: #d1d5db;
+        --border-color: #4b5563;
+      }
+
+      .dark-mode body {
+        background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+      }
+
+      .dark-mode .glass {
+        background: rgba(31, 41, 55, 0.95);
+      }
+
+      .dark-mode .bg-white {
+        background-color: var(--bg-primary) !important;
+      }
+
+      .dark-mode .text-gray-800 {
+        color: var(--text-primary) !important;
+      }
+
+      .dark-mode .text-gray-600 {
+        color: var(--text-secondary) !important;
+      }
+
+      .dark-mode .border-gray-300 {
+        border-color: var(--border-color) !important;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Inter', system-ui, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        transition: background 0.3s ease;
+      }
+
+      h1, h2, h3, h4, h5, h6 {
+        font-family: 'Poppins', system-ui, sans-serif;
+      }
+
+      /* Glass morphism effect */
+      .glass {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+      }
+
+      /* Gradient backgrounds */
+      .gradient-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+
+      .gradient-success {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      }
+
+      .gradient-warning {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      }
+
+      .gradient-danger {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      }
+
+      /* Smooth transitions */
+      button, a, .card {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      button:hover, .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      }
+
+      /* Scrollbar styling */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: #667eea;
+        border-radius: 4px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: #764ba2;
+      }
+
+      /* Loading animation */
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+      }
+
+      .animate-pulse {
+        animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      }
+    </style>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app" class="min-h-screen"></div>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
