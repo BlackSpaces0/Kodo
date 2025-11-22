@@ -3229,6 +3229,22 @@ function showWelcomeModal() {
         </div>
       </div>
 
+      <div class="bg-gradient-to-r from-purple-50 to-pink-50 border-2 border-purple-200 rounded-2xl p-6 mb-6">
+        <div class="flex items-start gap-3">
+          <span class="text-3xl">🎁</span>
+          <div class="flex-1">
+            <h3 class="font-bold text-gray-800 mb-2">¿Quieres ver cómo funciona?</h3>
+            <p class="text-sm text-gray-600 mb-3">
+              Podemos crear datos de demostración para que veas todas las funcionalidades en acción. 
+              ¡No te preocupes! Podrás eliminarlos cuando quieras.
+            </p>
+            <button id="create-demo-data" class="px-6 py-2 bg-purple-500 text-white rounded-xl font-semibold hover:bg-purple-600 transition-all">
+              ✨ Crear Datos de Demostración
+            </button>
+          </div>
+        </div>
+      </div>
+
       <div class="space-y-3">
         <button id="start-tour" class="w-full py-4 gradient-primary text-white rounded-xl font-bold text-lg hover:shadow-lg transition-all">
           🚀 Comenzar Tour Guiado
@@ -3243,6 +3259,28 @@ function showWelcomeModal() {
   document.body.appendChild(modal);
 
   // Handlers
+  modal.querySelector('#create-demo-data').addEventListener('click', async () => {
+    const btn = modal.querySelector('#create-demo-data');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="inline-block animate-spin">⏳</span> Creando datos...';
+    
+    try {
+      await createDemoData();
+      btn.innerHTML = '✅ ¡Datos creados!';
+      setTimeout(() => {
+        modal.remove();
+        window.location.reload();
+      }, 1500);
+    } catch (error) {
+      console.error('Error creating demo data:', error);
+      btn.innerHTML = '❌ Error al crear datos';
+      btn.disabled = false;
+      setTimeout(() => {
+        btn.innerHTML = '✨ Crear Datos de Demostración';
+      }, 2000);
+    }
+  });
+
   modal.querySelector('#start-tour').addEventListener('click', () => {
     modal.remove();
     startGuidedTour();
@@ -3692,6 +3730,75 @@ function updateNotificationIndicator() {
 function markNotificationAsRead(notificationId) {
   notifications = notifications.filter(n => n.id !== notificationId);
   updateNotificationIndicator();
+}
+
+// ========== CREATE DEMO DATA ==========
+async function createDemoData() {
+  try {
+    const today = new Date();
+    const uid = currentUser.uid;
+
+    // Create demo accounts
+    const accountsData = [
+      { name: 'Cuenta Corriente', type: 'checking', balance: 25000, currency: 'DOP', color: 'blue' },
+      { name: 'Ahorros', type: 'savings', balance: 50000, currency: 'DOP', color: 'green' },
+      { name: 'Tarjeta de Crédito', type: 'credit', balance: -5000, currency: 'DOP', color: 'red' }
+    ];
+
+    for (const account of accountsData) {
+      await addDoc(collection(db, 'users', uid, 'accounts'), {
+        ...account,
+        createdAt: today.toISOString()
+      });
+    }
+
+    // Create demo transactions (last 30 days)
+    const transactionsData = [
+      // Income transactions
+      { type: 'income', amount: 45000, category: 'salary', description: 'Salario mensual', date: new Date(today.getFullYear(), today.getMonth(), 1) },
+      { type: 'income', amount: 5000, category: 'freelance', description: 'Proyecto freelance', date: new Date(today.getFullYear(), today.getMonth(), 15) },
+      
+      // Expense transactions
+      { type: 'expense', amount: 8000, category: 'groceries', description: 'Supermercado', date: new Date(today.getFullYear(), today.getMonth(), 5) },
+      { type: 'expense', amount: 1500, category: 'transport', description: 'Gasolina', date: new Date(today.getFullYear(), today.getMonth(), 7) },
+      { type: 'expense', amount: 2500, category: 'utilities', description: 'Electricidad', date: new Date(today.getFullYear(), today.getMonth(), 10) },
+      { type: 'expense', amount: 3000, category: 'entertainment', description: 'Cena con amigos', date: new Date(today.getFullYear(), today.getMonth(), 12) },
+      { type: 'expense', amount: 5000, category: 'groceries', description: 'Compras del mes', date: new Date(today.getFullYear(), today.getMonth(), 14) },
+      { type: 'expense', amount: 1200, category: 'transport', description: 'Uber y taxis', date: new Date(today.getFullYear(), today.getMonth(), 18) },
+      { type: 'expense', amount: 4500, category: 'shopping', description: 'Ropa nueva', date: new Date(today.getFullYear(), today.getMonth(), 20) },
+      { type: 'expense', amount: 800, category: 'food', description: 'Almuerzo trabajo', date: new Date(today.getFullYear(), today.getMonth(), 22) }
+    ];
+
+    for (const transaction of transactionsData) {
+      await addDoc(collection(db, 'users', uid, 'transactions'), {
+        ...transaction,
+        date: transaction.date,
+        account: 'Cuenta Corriente',
+        createdAt: transaction.date.toISOString()
+      });
+    }
+
+    // Create demo budgets
+    const budgetsData = [
+      { name: 'Comida', category: 'groceries', amount: 15000, spent: 13000, period: 'monthly', startDate: new Date(today.getFullYear(), today.getMonth(), 1) },
+      { name: 'Transporte', category: 'transport', amount: 5000, spent: 2700, period: 'monthly', startDate: new Date(today.getFullYear(), today.getMonth(), 1) },
+      { name: 'Entretenimiento', category: 'entertainment', amount: 8000, spent: 3000, period: 'monthly', startDate: new Date(today.getFullYear(), today.getMonth(), 1) }
+    ];
+
+    for (const budget of budgetsData) {
+      await addDoc(collection(db, 'users', uid, 'budgets'), {
+        ...budget,
+        startDate: budget.startDate,
+        createdAt: today.toISOString()
+      });
+    }
+
+    console.log('✅ Datos de demostración creados exitosamente');
+    return true;
+  } catch (error) {
+    console.error('Error creating demo data:', error);
+    throw error;
+  }
 }
 
 // Make functions available globally
